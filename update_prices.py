@@ -65,7 +65,7 @@ def parse_max_price_text(text):
     """Z tekstu obwieszczenia wyciąga ceny brutto (z VAT) za litr: {'pb95': .., 'on': ..}."""
     t = re.sub(r"\s+", " ", text)
     out = {}
-    for key, label in (("pb95", r"bezołowiowej 95"), ("on", r"oleju napędowego")):
+    for key, label in (("pb95", r"bezołowiowej 95"), ("pb98", r"bezołowiowej 98"), ("on", r"oleju napędowego")):
         m = re.search(label + r".*?powiększona o podatek od towarów i usług wynosi (\d+,\d{2}) zł",
                       t, flags=re.IGNORECASE)
         if m:
@@ -194,6 +194,7 @@ def main():
         "ac": fb["ac_pln_kwh"], "dc_min": fb["dc_min_pln_kwh"], "dc_max": fb["dc_max_pln_kwh"],
         "pb95": fb["pb95_pln_l"], "pb95_kind": fb["pb95_kind"],
         "on": fb["on_pln_l"], "on_kind": fb["on_kind"], "lpg": fb["lpg_pln_l"],
+        "pb98": fb["pb98_pln_l"], "pb98_kind": fb["pb98_kind"],
     }
     prices.update({k: v for k, v in old.get("prices", {}).items()})
     prices.pop("g12w", None)
@@ -240,7 +241,7 @@ def main():
     try:
         mx, url, ann_date = fetch_max_prices(now.date())
         name = f"Monitor Polski – obwieszczenie ME z {ann_date:%d.%m.%Y}"
-        for k in ("pb95", "on"):
+        for k in ("pb95", "pb98", "on"):
             if k in mx:
                 prices[k], prices[k + "_kind"] = mx[k], "max"
                 sources[k] = {"name": name, "url": url, "auto": True}
@@ -252,7 +253,7 @@ def main():
         log(f"Ceny maks. niedostępne ({e}) - biorę średnie e-petrol")
         if ep:
             d = datetime.strptime(ep["date"], "%Y-%m-%d")
-            for k in ("pb95", "on"):
+            for k in ("pb95", "pb98", "on"):
                 prices[k], prices[k + "_kind"] = ep[k], "avg"
                 sources[k] = {"name": f"e-petrol.pl – średnia krajowa z {d:%d.%m.%Y}", "url": EPETROL_URL, "auto": True}
         else:

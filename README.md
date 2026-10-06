@@ -55,3 +55,10 @@ Wklej całe `index.html` (albo wgraj go jako `/100km/index.html`). Poza GitHub P
 pip install pypdf
 python3 update_prices.py   # cron np. 47 10,15 * * *
 ```
+
+## Wersja specjalna: tomek.html
+
+`tomek.html` to ta sama strona z dodatkową pozycją „Auto Tomka”: benzyna premium Pb98/100 (cena maksymalna Pb98 z obwieszczenia, gdy obowiązuje CPN, inaczej średnia), spalanie 15 l/100 km (`consumption.tomek_l` w `config.json`). Strona ma `noindex`, więc nie trafi do Google.
+
+Po każdej zmianie `index.html` odtwórz ją: `python3 build_tomek.py`. Na serwer wgrywasz oba pliki do folderu `/100km/`.
+

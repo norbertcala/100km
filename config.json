@@ -7,7 +7,8 @@
     "petrol_l": 7.0,
     "diesel_l": 6.0,
     "lpg_l": 8.8,
-    "h2_kg": 1.09
+    "h2_kg": 1.09,
+    "tomek_l": 15.0
   },
   "manual": {
     "home_pln_kwh": 1.04,
@@ -25,7 +26,9 @@
     "pb95_kind": "max",
     "on_pln_l": 7.88,
     "on_kind": "max",
-    "lpg_pln_l": 3.22
+    "lpg_pln_l": 3.22,
+    "pb98_pln_l": 7.59,
+    "pb98_kind": "max"
   },
   "consumption_note": "Realne zużycie typowego auta kompaktowego. Benzyna 7,0 l; diesel 6,0 l (ok. 15% mniej niż benzyna); LPG 8,8 l (ok. 25% więcej niż benzyna). Dane KE (OBFCM): realne spalanie ok. 20% powyżej WLTP."
 }
