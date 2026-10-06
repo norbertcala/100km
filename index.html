@@ -268,14 +268,14 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
 
   <section class="row c-pb" id="r-pb">
     <div class="ico" aria-hidden="true">⛽</div>
-    <div class="txt"><div class="name">Benzyna Pb95 (Auto spalinowe)<span class="badge-slot"></span></div><div class="sub" id="s-pb"></div></div>
+    <div class="txt"><div class="name"><span>Benzyna Pb95 <span class="cpn" id="t-pb">(z pakietem CPN)</span></span><span class="badge-slot"></span></div><div class="sub" id="s-pb"></div></div>
     <div class="val" id="v-pb"></div>
     <div class="bar"><i id="b-pb"></i></div>
   </section>
 
   <section class="row c-on" id="r-on">
     <div class="ico" aria-hidden="true">🛢️</div>
-    <div class="txt"><div class="name">Diesel ON (Auto spalinowe)<span class="badge-slot"></span></div><div class="sub" id="s-on"></div></div>
+    <div class="txt"><div class="name"><span>Diesel ON <span class="cpn" id="t-on">(z pakietem CPN)</span></span><span class="badge-slot"></span></div><div class="sub" id="s-on"></div></div>
     <div class="val" id="v-on"></div>
     <div class="bar"><i id="b-on"></i></div>
   </section>
@@ -367,6 +367,12 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
     $("s-ac").textContent = "Słupki miejskie • Stawka ~" + pl(p.ac, 2) + " zł/kWh";
     $("s-dc").textContent = "Stawki w trasie " + pl(p.dc_min, 2) + " - " + pl(p.dc_max, 2) + " zł/kWh (Ionity / GW)";
     $("s-pb").textContent = (p.pb95_kind === "avg" ? "Śr. " : "Maks. ") + pl(p.pb95, 2) + " zł/l • Średnie auto ~" + pl(c.petrol_l, 1) + " l / 100 km";
+    var CPN_TIP = "Cena maksymalna z rządowego pakietu „Ceny Paliwa Niżej” (obniżony VAT i akcyza)";
+    [["pb", p.pb95_kind], ["on", p.on_kind]].forEach(function (x) {
+      var t = $("t-" + x[0]);
+      t.textContent = x[1] === "avg" ? "(Auto spalinowe)" : "(z pakietem CPN)";
+      t.title = x[1] === "avg" ? "" : CPN_TIP;
+    });
     $("s-on").textContent = (p.on_kind === "avg" ? "Śr. " : "Maks. ") + pl(p.on, 2) + " zł/l • Średnie auto ~" + pl(c.diesel_l, 1) + " l / 100 km";
     $("s-lpg").textContent = "Śr. " + pl(p.lpg, 2) + " zł/l • Średnie auto ~" + pl(c.lpg_l, 1) + " l / 100 km (+25% vs benzyna)";
     $("s-h2").textContent = "Orlen " + pl(p.h2, p.h2 % 1 ? 2 : 0) + " zł/kg • Toyota Mirai ~" + pl(c.h2_kg, 1) + " kg / 100 km";
