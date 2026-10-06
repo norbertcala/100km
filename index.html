@@ -148,8 +148,20 @@ footer summary:focus-visible { outline: 1px solid var(--muted); outline-offset: 
 footer a { color: var(--muted); text-decoration: none; border-bottom: 1px dotted var(--faint); }
 footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
 
-.head-top { display: flex; align-items: center; justify-content: space-between; gap: calc(0.8 * var(--u)); }
+.head-top { display: flex; align-items: center; justify-content: space-between; gap: calc(0.6 * var(--u)); }
 .head-top .kicker { margin-left: auto; align-self: center; }
+.brand {
+  display: inline-flex; align-items: center; flex: none;
+  background: #f6f4f8; border-radius: calc(0.55 * var(--u));
+  padding: calc(0.3 * var(--u)) calc(0.6 * var(--u));
+  box-shadow: 0 0 0 1px rgba(255,255,255,.06), 0 6px 18px -10px rgba(244,63,94,.55);
+  transition: transform .2s, box-shadow .2s;
+}
+.brand img { display: block; height: calc(1.45 * var(--u)); width: auto; }
+.brand:hover { transform: translateY(-1px); box-shadow: 0 0 0 1px rgba(255,255,255,.12), 0 8px 22px -10px rgba(244,63,94,.75); }
+.brand:focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; }
+.poster .brand img { height: 26px; }
+.poster .brand { padding: 6px 12px; border-radius: 10px; }
 .dl {
   display: inline-flex; align-items: center; gap: calc(0.45 * var(--u));
   font: 600 calc(0.78 * var(--u)) / 1 var(--display);
@@ -227,6 +239,9 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
   }
   .live .head { grid-area: head; justify-content: center; }
   .live .head-top { margin-bottom: calc(0.6 * var(--u)); }
+  .sheet.live { position: relative; }
+  .live .brand { position: absolute; top: calc(1.8 * var(--u)); left: 0; }
+  .live .brand img { height: calc(1.9 * var(--u)); }
   .live h1 { font-size: calc(3.5 * var(--u)); margin-bottom: calc(1.4 * var(--u)); }
   .live .rows { grid-area: rows; grid-template-rows: repeat(8, 1fr); gap: calc(0.6 * var(--u)); min-height: 0; }
   .live .summary { grid-area: sum; padding: calc(1.3 * var(--u)) calc(0.5 * var(--u)); }
@@ -258,6 +273,7 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
 <main class="sheet live" aria-live="polite">
   <header class="head">
   <div class="head-top">
+    <a class="brand" href="https://techlove.pl/" title="techlove.pl – strona główna"><img src="https://techlove.pl/wp-content/uploads/2026/05/new-logo-768x247.png" alt="techlove.pl" width="768" height="247" decoding="async"></a>
     <button class="dl" id="dl" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v8M4.5 6.8 8 10.3l3.5-3.5M2.5 13.5h11"/></svg><span>Pobierz obrazek</span></button>
     <div class="kicker" id="kicker">100 km realnej jazdy</div>
   </div>
@@ -502,6 +518,7 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
     btn.disabled = true; label.textContent = "Przygotowuję…";
     var poster = buildPoster();
     var opts = { pixelRatio: 2, cacheBust: true, backgroundColor: "#060914",
+                 imagePlaceholder: "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==",
                  width: 814, height: poster.offsetHeight,
                  style: { position: "static", left: "0", top: "0" } };
     (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve())
