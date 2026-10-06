@@ -1,10 +1,12 @@
 {
-  "updated": "2026-10-06T16:47:23+02:00",
+  "updated": "2026-10-06T17:33:26+02:00",
   "distance_km": 100,
   "consumption": {
     "ev_kwh_min": 17,
     "ev_kwh_max": 18,
     "petrol_l": 7.0,
+    "diesel_l": 6.0,
+    "lpg_l": 8.8,
     "h2_kg": 1.09
   },
   "prices": {
@@ -13,6 +15,9 @@
     "dc_max": 3.1,
     "pb95": 6.79,
     "pb95_kind": "max",
+    "on": 7.82,
+    "on_kind": "max",
+    "lpg": 3.22,
     "g12w": 0.65,
     "h2": 69.0
   },
@@ -40,6 +45,16 @@
     "h2": {
       "name": "Orlen H2",
       "url": "https://www.orlen.pl",
+      "auto": false
+    },
+    "on": {
+      "name": "Monitor Polski – obwieszczenie ME z 05.10.2026",
+      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/968/text.pdf",
+      "auto": true
+    },
+    "consumption": {
+      "name": "Zużycie: KE – dane OBFCM (realne spalanie ~20% powyżej WLTP)",
+      "url": "https://climate.ec.europa.eu/news-other-reads/news/first-commission-report-real-world-co2-emissions-cars-and-vans-using-data-board-fuel-consumption-2024-03-18_en",
       "auto": false
     }
   },
