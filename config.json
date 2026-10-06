@@ -5,6 +5,8 @@
     "ev_kwh_min": 17,
     "ev_kwh_max": 18,
     "petrol_l": 7.0,
+    "diesel_l": 6.0,
+    "lpg_l": 8.8,
     "h2_kg": 1.09
   },
   "manual": {
@@ -15,9 +17,13 @@
   },
   "fallback": {
     "ac_pln_kwh": 1.75,
-    "dc_min_pln_kwh": 2.00,
-    "dc_max_pln_kwh": 3.00,
+    "dc_min_pln_kwh": 2.0,
+    "dc_max_pln_kwh": 3.0,
     "pb95_pln_l": 6.79,
-    "pb95_kind": "max"
-  }
+    "pb95_kind": "max",
+    "on_pln_l": 7.88,
+    "on_kind": "max",
+    "lpg_pln_l": 3.22
+  },
+  "consumption_note": "Realne zużycie typowego auta kompaktowego. Benzyna 7,0 l; diesel 6,0 l (ok. 15% mniej niż benzyna); LPG 8,8 l (ok. 25% więcej niż benzyna). Dane KE (OBFCM): realne spalanie ok. 20% powyżej WLTP."
 }

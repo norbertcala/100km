@@ -3,8 +3,9 @@
 Aktualizuje data.json dla strony "Koszt 100 km".
 
 Źródła pobierane automatycznie:
-  - Pb95: najnowsze obwieszczenie Ministra Energii o cenie maksymalnej (Monitor Polski,
+  - Pb95 i ON: najnowsze obwieszczenie Ministra Energii o cenie maksymalnej (Monitor Polski,
           publiczne API ELI Sejmu). Gdy cena maksymalna nie obowiązuje -> średnia e-petrol.pl.
+  - LPG: średnia krajowa e-petrol.pl (aktualizowana co tydzień).
   - AC / DC: ranking cen ładowania elektromobilni.pl (stawki GreenWay i IONITY).
 Wartości ręczne (config.json): taryfa G12w (URE) i cena wodoru Orlen.
 
@@ -54,18 +55,21 @@ def num(s):
     return float(s.replace(" ", "").replace(",", "."))
 
 
-# ---------- Pb95: cena maksymalna z Monitora Polskiego ----------
+# ---------- Pb95 i ON: cena maksymalna z Monitora Polskiego ----------
 
 def parse_max_price_text(text):
-    """Z tekstu obwieszczenia wyciąga cenę Pb95 brutto (z VAT) za litr."""
+    """Z tekstu obwieszczenia wyciąga ceny brutto (z VAT) za litr: {'pb95': .., 'on': ..}."""
     t = re.sub(r"\s+", " ", text)
-    m = re.search(
-        r"bezołowiowej 95.*?powiększona o podatek od towarów i usług wynosi (\d+,\d{2}) zł",
-        t, flags=re.IGNORECASE)
-    return num(m.group(1)) if m else None
+    out = {}
+    for key, label in (("pb95", r"bezołowiowej 95"), ("on", r"oleju napędowego")):
+        m = re.search(label + r".*?powiększona o podatek od towarów i usług wynosi (\d+,\d{2}) zł",
+                      t, flags=re.IGNORECASE)
+        if m:
+            out[key] = num(m.group(1))
+    return out
 
 
-def fetch_pb95_max(today):
+def fetch_max_prices(today):
     from pypdf import PdfReader  # import tutaj, żeby reszta działała bez pypdf
 
     items = []
@@ -90,23 +94,42 @@ def fetch_pb95_max(today):
 
     pdf = http_get(f"{ELI_BASE}/{current['year']}/{current['pos']}/text.pdf", binary=True)
     text = "\n".join(p.extract_text() or "" for p in PdfReader(io.BytesIO(pdf)).pages)
-    price = parse_max_price_text(text)
-    if not price:
+    prices = parse_max_price_text(text)
+    if "pb95" not in prices:
         raise RuntimeError("nie znaleziono ceny Pb95 w obwieszczeniu")
     url = f"https://api.sejm.gov.pl/eli/acts/MP/{current['year']}/{current['pos']}/text.pdf"
-    return price, url, ann_date
+    return prices, url, ann_date
 
 
-# ---------- Pb95: średnia e-petrol (gdy brak ceny maksymalnej) ----------
+# ---------- e-petrol: średnie ceny detaliczne (LPG zawsze, Pb95/ON gdy brak ceny maks.) ----------
+
+EPETROL_KEYS = {"Pb98": "pb98", "Pb95": "pb95", "ON": "on", "LPG": "lpg"}
+
 
 def parse_epetrol(html):
-    t = re.sub(r"<[^>]+>", " ", html)
-    t = re.sub(r"\s+", " ", t)
-    m = re.search(r"(?:Pb\s?95|Eurosuper 95|benzyna 95)\D{0,40}?(\d,\d{2})", t, flags=re.IGNORECASE)
-    if not m:
+    """Tabela 'Średnie ceny detaliczne paliw w Polsce': Aktualizacja | Pb98 | Pb95 | ON | LPG.
+    Zwraca {'date': 'YYYY-MM-DD', 'pb98':.., 'pb95':.., 'on':.., 'lpg':..} dla najnowszego wiersza."""
+    t = re.sub(r"</t[dh]>|<br\s*/?>|</tr>|</p>|</div>", " ", html, flags=re.IGNORECASE)
+    t = re.sub(r"<[^>]+>", "", t)
+    t = re.sub(r"&nbsp;|\s+", " ", t)
+    order = ["pb98", "pb95", "on", "lpg"]
+    h = t.find("Aktualizacja")
+    if h >= 0:
+        found = re.findall(r"\b(Pb ?98|Pb ?95|ON|LPG)\b", t[h:h + 200])
+        keys = [EPETROL_KEYS[f.replace(" ", "")] for f in found]
+        if sorted(keys[:4]) == sorted(order):
+            order = keys[:4]
+    num_re = r"(\d{1,2}[,.]\d{2})"
+    rows = re.findall(r"(\d{4}-\d{2}-\d{2})\s+" + r"\s+".join([num_re] * 4), t)
+    if not rows:
         return None
-    v = num(m.group(1))
-    return v if 4.0 < v < 12.0 else None
+    date, *vals = max(rows, key=lambda r: r[0])
+    out = {"date": date}
+    for k, v in zip(order, vals):
+        out[k] = num(v)
+    if not (4 < out.get("pb95", 0) < 15 and 1 < out.get("lpg", 0) < 8):
+        return None
+    return out
 
 
 # ---------- AC / DC: ranking elektromobilni.pl ----------
@@ -145,39 +168,54 @@ def parse_ranking(html):
 def main():
     cfg = json.loads(CONFIG.read_text("utf-8"))
     old = json.loads(DATA.read_text("utf-8")) if DATA.exists() else {}
-    prices = dict(cfg["fallback"])
+    fb = cfg["fallback"]
     prices = {
-        "ac": prices["ac_pln_kwh"], "dc_min": prices["dc_min_pln_kwh"],
-        "dc_max": prices["dc_max_pln_kwh"], "pb95": prices["pb95_pln_l"],
-        "pb95_kind": prices["pb95_kind"],
+        "ac": fb["ac_pln_kwh"], "dc_min": fb["dc_min_pln_kwh"], "dc_max": fb["dc_max_pln_kwh"],
+        "pb95": fb["pb95_pln_l"], "pb95_kind": fb["pb95_kind"],
+        "on": fb["on_pln_l"], "on_kind": fb["on_kind"], "lpg": fb["lpg_pln_l"],
     }
     prices.update({k: v for k, v in old.get("prices", {}).items()})
     prices["g12w"] = cfg["manual"]["g12w_pln_kwh"]
     prices["h2"] = cfg["manual"]["h2_pln_kg"]
     sources = old.get("sources", {})
-    footer_fuel = "E-petrol"
+    used = []
     now = datetime.now(WARSAW)
-    ok = True
 
-    # Pb95
+    # e-petrol: LPG zawsze, Pb95/ON jako zapas
+    ep = None
     try:
-        price, url, ann_date = fetch_pb95_max(now.date())
-        prices["pb95"], prices["pb95_kind"] = price, "max"
-        sources["pb95"] = {"name": f"Monitor Polski – obwieszczenie ME z {ann_date:%d.%m.%Y}", "url": url, "auto": True}
-        footer_fuel = "Monitor Polski"
-        log(f"Pb95 (cena maks.): {price}")
+        ep = parse_epetrol(http_get(EPETROL_URL))
+        if not ep:
+            raise RuntimeError("nie rozpoznano tabeli cen")
+        log(f"e-petrol: {ep}")
     except Exception as e:
-        log(f"Pb95 maks. niedostępna ({e}) - próbuję e-petrol")
-        try:
-            v = parse_epetrol(http_get(EPETROL_URL))
-            if not v:
-                raise RuntimeError("nie rozpoznano ceny na stronie")
-            prices["pb95"], prices["pb95_kind"] = v, "avg"
-            sources["pb95"] = {"name": "e-petrol.pl – średnia krajowa", "url": EPETROL_URL, "auto": True}
-            log(f"Pb95 (średnia e-petrol): {v}")
-        except Exception as e2:
-            ok = False
-            log(f"Pb95: zostaje poprzednia wartość ({e2})")
+        log(f"e-petrol niedostępny ({e})")
+        ep = None
+    if ep:
+        d = datetime.strptime(ep["date"], "%Y-%m-%d")
+        prices["lpg"] = ep["lpg"]
+        sources["lpg"] = {"name": f"e-petrol.pl – średnia krajowa z {d:%d.%m.%Y}", "url": EPETROL_URL, "auto": True}
+        used.append("e-petrol")
+
+    # Pb95 i ON: cena maksymalna, a gdy nie obowiązuje - średnia e-petrol
+    try:
+        mx, url, ann_date = fetch_max_prices(now.date())
+        name = f"Monitor Polski – obwieszczenie ME z {ann_date:%d.%m.%Y}"
+        for k in ("pb95", "on"):
+            if k in mx:
+                prices[k], prices[k + "_kind"] = mx[k], "max"
+                sources[k] = {"name": name, "url": url, "auto": True}
+        used.insert(0, "Monitor Polski")
+        log(f"Ceny maks.: {mx}")
+    except Exception as e:
+        log(f"Ceny maks. niedostępne ({e}) - biorę średnie e-petrol")
+        if ep:
+            d = datetime.strptime(ep["date"], "%Y-%m-%d")
+            for k in ("pb95", "on"):
+                prices[k], prices[k + "_kind"] = ep[k], "avg"
+                sources[k] = {"name": f"e-petrol.pl – średnia krajowa z {d:%d.%m.%Y}", "url": EPETROL_URL, "auto": True}
+        else:
+            log("Pb95/ON: zostają poprzednie wartości")
 
     # AC / DC
     try:
@@ -188,23 +226,28 @@ def main():
         note = f" (stan na {r['as_of']})" if "as_of" in r else ""
         for k in ("ac", "dc"):
             sources[k] = {"name": "Ranking cen ładowania – elektromobilni.pl" + note, "url": RANKING_URL, "auto": True}
+        used.append("elektromobilni.pl")
         log(f"Ładowanie: {r}")
-        if not {"ac", "dc_min", "dc_max"} <= r.keys():
-            ok = False
     except Exception as e:
-        ok = False
         log(f"Ranking ładowania: zostają poprzednie wartości ({e})")
 
     sources.setdefault("g12w", {"name": "Taryfy URE", "url": "https://www.ure.gov.pl/pl/energia-elektryczna/taryfy", "auto": False})
     sources.setdefault("h2", {"name": "Orlen H2", "url": "https://www.orlen.pl", "auto": False})
+    sources.setdefault("consumption", {"name": "Zużycie: KE – dane OBFCM (realne spalanie ~20% powyżej WLTP)",
+                                       "url": "https://climate.ec.europa.eu/news-other-reads/news/first-commission-report-real-world-co2-emissions-cars-and-vans-using-data-board-fuel-consumption-2024-03-18_en",
+                                       "auto": False})
 
+    seen = []
+    for u in ["Orlen H2", "Taryfy URE"] + used:
+        if u not in seen:
+            seen.append(u)
     data = {
         "updated": now.isoformat(timespec="seconds"),
         "distance_km": cfg["distance_km"],
         "consumption": cfg["consumption"],
         "prices": prices,
         "sources": sources,
-        "footer": f"Dane: Orlen H2 / Taryfy URE / {footer_fuel} / elektromobilni.pl",
+        "footer": "Dane: " + " / ".join(seen),
     }
     DATA.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", "utf-8")
     log("Zapisano data.json")

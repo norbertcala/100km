@@ -28,6 +28,10 @@
   --violet-text: #c084fc;
   --amber: #f59e0b;
   --amber-text: #fbbf24;
+  --steel: #94a3b8;
+  --steel-text: #cbd5e1;
+  --blue: #3b82f6;
+  --blue-text: #60a5fa;
   --rose: #f43f5e;
   --rose-text: #fb5a71;
   --rose-line: #9f2a44;
@@ -37,8 +41,8 @@
   --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   color-scheme: dark;
   /* skala: ogranicza ją i wysokość, i szerokość ekranu */
-  --u: clamp(10px, min(1.62vh, 3.9vw), 17px);
-  --u: clamp(10px, min(1.62dvh, 3.9vw), 17px);
+  --u: clamp(9.5px, min(1.46vh, 3.9vw), 17px);
+  --u: clamp(9.5px, min(1.46dvh, 3.9vw), 17px);
 }
 * { box-sizing: border-box; }
 html, body { height: 100%; }
@@ -81,7 +85,7 @@ h1 .hot {
 }
 h1 .dot { color: var(--amber-text); }
 
-.rows { display: grid; gap: calc(0.6 * var(--u)); }
+.rows { display: grid; gap: calc(0.5 * var(--u)); }
 .row {
   background: var(--card);
   border: 1px solid var(--card-line);
@@ -112,6 +116,8 @@ h1 .dot { color: var(--amber-text); }
 .c-ac .val { color: var(--cyan); } .c-ac .bar i { background: var(--cyan); }
 .c-dc .val { color: var(--violet-text); } .c-dc .bar i { background: var(--violet); }
 .c-pb .val { color: var(--amber-text); } .c-pb .bar i { background: var(--amber); }
+.c-on .val { color: var(--steel-text); } .c-on .bar i { background: var(--steel); }
+.c-lpg .val { color: var(--blue-text); } .c-lpg .bar i { background: var(--blue); }
 .c-h2 .val { color: var(--rose-text); } .c-h2 .bar i { background: linear-gradient(90deg, #e11d48, var(--pink)); }
 
 .summary {
@@ -201,8 +207,8 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
 /* Komputer i ekrany poziome: dwie kolumny, wszystko w wysokości okna */
 @media (min-width: 900px) and (min-aspect-ratio: 5/4) {
   :root {
-    --u: clamp(11px, min(2.3vh, 1.32vw), 21px);
-    --u: clamp(11px, min(2.3dvh, 1.32vw), 21px);
+    --u: clamp(10.5px, min(2.02vh, 1.32vw), 21px);
+    --u: clamp(10.5px, min(2.02dvh, 1.32vw), 21px);
   }
   .sheet.live {
     max-width: calc(76 * var(--u));
@@ -220,7 +226,7 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
   .live .head { grid-area: head; justify-content: center; }
   .live .head-top { margin-bottom: calc(0.6 * var(--u)); }
   .live h1 { font-size: calc(3.5 * var(--u)); margin-bottom: calc(1.4 * var(--u)); }
-  .live .rows { grid-area: rows; grid-template-rows: repeat(5, 1fr); gap: calc(0.85 * var(--u)); min-height: 0; }
+  .live .rows { grid-area: rows; grid-template-rows: repeat(7, 1fr); gap: calc(0.6 * var(--u)); min-height: 0; }
   .live .summary { grid-area: sum; padding: calc(1.3 * var(--u)) calc(0.5 * var(--u)); }
   .live footer { grid-area: foot; }
 }
@@ -267,6 +273,20 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
     <div class="bar"><i id="b-pb"></i></div>
   </section>
 
+  <section class="row c-on" id="r-on">
+    <div class="ico" aria-hidden="true">🛢️</div>
+    <div class="txt"><div class="name">Diesel ON (Auto spalinowe)<span class="badge-slot"></span></div><div class="sub" id="s-on"></div></div>
+    <div class="val" id="v-on"></div>
+    <div class="bar"><i id="b-on"></i></div>
+  </section>
+
+  <section class="row c-lpg" id="r-lpg">
+    <div class="ico" aria-hidden="true">🔥</div>
+    <div class="txt"><div class="name">Autogaz LPG (Auto z instalacją)<span class="badge-slot"></span></div><div class="sub" id="s-lpg"></div></div>
+    <div class="val" id="v-lpg"></div>
+    <div class="bar"><i id="b-lpg"></i></div>
+  </section>
+
   <section class="row c-h2" id="r-h2">
     <div class="ico" aria-hidden="true">💧</div>
     <div class="txt"><div class="name">Wodór H2 (Orlen)<span class="badge-slot"></span></div><div class="sub" id="s-h2"></div></div>
@@ -282,7 +302,7 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
   </section>
 
   <footer>
-    <div class="line" id="f-line">Dane: Orlen H2 / Taryfy URE / E-petrol</div>
+    <div class="line" id="f-line">Dane: Orlen H2 / Taryfy URE / Monitor Polski / e-petrol / elektromobilni.pl</div>
     <details><summary>Źródła</summary><div id="f-meta"></div></details>
   </footer>
 </main>
@@ -304,16 +324,17 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
   var DEFAULTS = {
     updated: "2026-10-06T15:00:00+02:00",
     distance_km: 100,
-    consumption: { ev_kwh_min: 17, ev_kwh_max: 18, petrol_l: 7.0, h2_kg: 1.09 },
-    prices: { g12w: 0.65, ac: 1.75, dc_min: 2.00, dc_max: 3.00, pb95: 6.79, pb95_kind: "max", h2: 69.0 },
+    consumption: { ev_kwh_min: 17, ev_kwh_max: 18, petrol_l: 7.0, diesel_l: 6.0, lpg_l: 8.8, h2_kg: 1.09 },
+    prices: { g12w: 0.65, ac: 1.75, dc_min: 2.00, dc_max: 3.00, pb95: 6.79, pb95_kind: "max", on: 7.88, on_kind: "max", lpg: 3.22, h2: 69.0 },
     sources: {
       g12w: { name: "Taryfy URE", url: "https://www.ure.gov.pl/pl/energia-elektryczna/taryfy" },
       ac: { name: "Ranking cen ładowania – elektromobilni.pl", url: "https://elektromobilni.pl/ranking-cen-ladowania-w-polsce/" },
       dc: { name: "Ranking cen ładowania – elektromobilni.pl", url: "https://elektromobilni.pl/ranking-cen-ladowania-w-polsce/" },
       pb95: { name: "Monitor Polski – obwieszczenie Ministra Energii", url: "https://api.sejm.gov.pl/eli/acts/MP/2026" },
+      lpg: { name: "e-petrol.pl – średnia krajowa", url: "https://www.e-petrol.pl/notowania/rynek-krajowy/ceny-stacje-paliw" },
       h2: { name: "Orlen H2", url: "https://www.orlen.pl" }
     },
-    footer: "Dane: Orlen H2 / Taryfy URE / E-petrol"
+    footer: "Dane: Orlen H2 / Taryfy URE / Monitor Polski / e-petrol / elektromobilni.pl"
   };
 
   var $ = function (id) { return document.getElementById(id); };
@@ -330,10 +351,12 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
       dcLo: Math.round(p.dc_min * c.ev_kwh_min * f),
       dcHi: Math.round(p.dc_max * c.ev_kwh_max * f),
       pb:   Math.round(p.pb95 * c.petrol_l * f),
+      on:   Math.round(p.on * c.diesel_l * f),
+      lpg:  Math.round(p.lpg * c.lpg_l * f),
       h2:   Math.round(p.h2 * c.h2_kg * f)
     };
-    var mid = { home: rows.home, ac: rows.ac, dc: (rows.dcLo + rows.dcHi) / 2, pb: rows.pb, h2: rows.h2 };
-    var max = Math.max(mid.home, mid.ac, rows.dcHi, mid.pb, mid.h2);
+    var mid = { home: rows.home, ac: rows.ac, dc: (rows.dcLo + rows.dcHi) / 2, pb: rows.pb, on: rows.on, lpg: rows.lpg, h2: rows.h2 };
+    var max = Math.max(mid.home, mid.ac, rows.dcHi, mid.pb, mid.on, mid.lpg, mid.h2);
 
     $("kicker").textContent = km + " km realnej jazdy";
     $("h-home").textContent = rows.home + " zł";
@@ -343,20 +366,24 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
     $("s-ac").textContent = "Słupki miejskie • Stawka ~" + pl(p.ac, 2) + " zł/kWh";
     $("s-dc").textContent = "Stawki w trasie " + pl(p.dc_min, 2) + " - " + pl(p.dc_max, 2) + " zł/kWh (Ionity / GW)";
     $("s-pb").textContent = (p.pb95_kind === "avg" ? "Śr. " : "Maks. ") + pl(p.pb95, 2) + " zł/l • Średnie auto ~" + pl(c.petrol_l, 1) + " l / 100 km";
+    $("s-on").textContent = (p.on_kind === "avg" ? "Śr. " : "Maks. ") + pl(p.on, 2) + " zł/l • Średnie auto ~" + pl(c.diesel_l, 1) + " l / 100 km";
+    $("s-lpg").textContent = "Śr. " + pl(p.lpg, 2) + " zł/l • Średnie auto ~" + pl(c.lpg_l, 1) + " l / 100 km (+25% vs benzyna)";
     $("s-h2").textContent = "Orlen " + pl(p.h2, p.h2 % 1 ? 2 : 0) + " zł/kg • Toyota Mirai ~" + pl(c.h2_kg, 1) + " kg / 100 km";
 
     $("v-home").textContent = "~" + rows.home + " zł";
     $("v-ac").textContent = "~" + rows.ac + " zł";
     $("v-dc").textContent = "~" + rows.dcLo + "-" + rows.dcHi + " zł";
     $("v-pb").textContent = "~" + rows.pb + " zł";
+    $("v-on").textContent = "~" + rows.on + " zł";
+    $("v-lpg").textContent = "~" + rows.lpg + " zł";
     $("v-h2").textContent = "~" + rows.h2 + " zł";
 
-    ["home", "ac", "dc", "pb", "h2"].forEach(function (k) {
+    ["home", "ac", "dc", "pb", "on", "lpg", "h2"].forEach(function (k) {
       $("b-" + k).style.width = Math.max(3, (mid[k] / max) * 100).toFixed(1) + "%";
       var r = $("r-" + k); r.classList.remove("best", "worst");
       r.querySelector(".badge-slot").innerHTML = "";
     });
-    var order = ["home", "ac", "dc", "pb", "h2"].sort(function (a, b) { return mid[a] - mid[b]; });
+    var order = ["home", "ac", "dc", "pb", "on", "lpg", "h2"].sort(function (a, b) { return mid[a] - mid[b]; });
     var best = order[0], worst = order[order.length - 1];
     $("r-" + best).classList.add("best");
     $("r-" + best).querySelector(".badge-slot").innerHTML = '<span class="badge lead">Lider opłacalności</span>';
@@ -370,7 +397,7 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
         var when = "";
     try { when = new Date(D.updated).toLocaleString("pl-PL", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Warsaw" }); } catch (e) {}
     var s = D.sources || {}, seen = {}, links = [];
-    ["pb95", "ac", "dc", "g12w", "h2"].forEach(function (k) {
+    ["pb95", "on", "lpg", "ac", "dc", "g12w", "h2", "consumption"].forEach(function (k) {
       var src = s[k]; if (!src || seen[src.name]) return; seen[src.name] = 1;
       links.push('<a href="' + esc(src.url) + '" target="_blank" rel="noopener">' + esc(src.name) + "</a>");
     });
