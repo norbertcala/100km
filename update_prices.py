@@ -200,6 +200,8 @@ def main():
     prices.pop("g12w", None)
     prices["home"] = cfg["manual"]["home_pln_kwh"]
     prices["home_night"] = cfg["manual"]["home_night_pln_kwh"]
+    prices["home_day"] = cfg["manual"]["home_day_pln_kwh"]
+    prices["dyn_cheap"] = cfg["manual"]["dyn_cheap_pln_kwh"]
     prices["h2"] = cfg["manual"]["h2_pln_kg"]
     sources = old.get("sources", {})
     used = []

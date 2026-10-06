@@ -64,7 +64,7 @@ body {
   max-width: calc(46 * var(--u));
   min-height: 100%;
   margin: 0 auto;
-  padding-block: calc(1.1 * var(--u));
+  padding-block: calc(1 * var(--u));
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -275,6 +275,69 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
   .extra .live.sheet { gap: calc(0.6 * var(--u)); padding-block: calc(0.8 * var(--u)); }
 }
 .c-tomek .val { color: var(--orange); } .c-tomek .bar i { background: linear-gradient(90deg, var(--orange), var(--rose)); }
+[hidden] { display: none !important; }
+.live .kicker { display: none; }
+.head-top .dl { margin-left: auto; }
+
+/* Przełącznik zakładek */
+.tabs {
+  display: inline-flex; gap: calc(0.15 * var(--u)); padding: calc(0.18 * var(--u));
+  background: var(--card); border: 1px solid var(--card-line); border-radius: calc(0.6 * var(--u));
+}
+.tab {
+  font: 600 calc(0.76 * var(--u)) / 1 var(--display); color: var(--muted);
+  background: transparent; border: 0; border-radius: calc(0.45 * var(--u));
+  padding: calc(0.45 * var(--u)) calc(0.75 * var(--u)); cursor: pointer; white-space: nowrap;
+  transition: color .2s, background-color .2s;
+}
+.tab:hover { color: var(--fg); }
+.tab[aria-selected="true"] { color: var(--fg); background: #1a2136; box-shadow: inset 0 0 0 1px var(--green-line); }
+.tab:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+
+/* Kalkulator „Mój przypadek” */
+.calc {
+  background: var(--card); border: 1px solid var(--card-line); border-radius: calc(1.15 * var(--u));
+  padding: calc(0.9 * var(--u)) calc(1 * var(--u));
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: calc(0.55 * var(--u)) calc(0.6 * var(--u));
+}
+.field { display: flex; flex-direction: column; gap: calc(0.25 * var(--u)); min-width: 0; }
+.field.wide { grid-column: 1 / -1; }
+.field label { font-size: calc(0.64 * var(--u)); font-weight: 600; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.calc input, .calc select {
+  width: 100%; min-width: 0; color: var(--fg); background: #0a0f1d;
+  border: 1px solid var(--card-line); border-radius: calc(0.5 * var(--u));
+  padding: calc(0.45 * var(--u)) calc(0.55 * var(--u));
+  font: 700 calc(0.92 * var(--u)) / 1.2 var(--mono); font-variant-numeric: tabular-nums;
+  transition: border-color .2s;
+}
+.calc select {
+  font: 600 calc(0.86 * var(--u)) / 1.2 var(--display); appearance: none; -webkit-appearance: none; cursor: pointer;
+  padding-right: calc(1.8 * var(--u));
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%239aa3b5' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right calc(0.6 * var(--u)) center; background-size: calc(0.7 * var(--u));
+}
+.calc input:focus, .calc select:focus { outline: none; border-color: var(--green-line); box-shadow: 0 0 0 2px rgba(52,211,153,.18); }
+.calc-note { grid-column: 1 / -1; margin: 0; font-size: calc(0.68 * var(--u)); color: var(--faint); line-height: 1.45; }
+.calc-sum { grid-column: 1 / -1; margin: 0; padding-top: calc(0.55 * var(--u)); border-top: 1px solid var(--card-line); font-size: calc(0.86 * var(--u)); line-height: 1.45; color: var(--muted); }
+.calc-sum b { color: var(--green); font-weight: 800; }
+.calc-sum b.r { color: var(--rose-text); }
+.calc-poster { background: var(--card); border: 1px solid var(--card-line); border-radius: 22px; padding: 18px 22px; font-size: 14px; line-height: 1.55; color: var(--muted); }
+.calc-poster b { color: var(--fg); }
+.c-mev .val { color: var(--green); } .c-mev .bar i { background: linear-gradient(90deg, #22c08a, var(--green)); }
+.c-mpb .val { color: var(--amber-text); } .c-mpb .bar i { background: var(--amber); }
+.c-mon .val { color: var(--steel-text); } .c-mon .bar i { background: var(--steel); }
+.c-mlpg .val { color: var(--blue-text); } .c-mlpg .bar i { background: var(--blue); }
+
+@media (max-width: 520px) {
+  .live .dl span { display: none; }
+  .live .dl { padding: calc(0.48 * var(--u)) calc(0.6 * var(--u)); }
+  .tab { padding: calc(0.45 * var(--u)) calc(0.6 * var(--u)); }
+}
+@media (min-width: 900px) and (min-aspect-ratio: 5/4) {
+  .live .calc { grid-area: sum; }
+  .is-mine.live h1 { font-size: calc(2.9 * var(--u)); }
+  .live .calc-rows { grid-area: rows; grid-template-rows: none; align-content: center; gap: calc(0.85 * var(--u)); }
+}
 @media (prefers-reduced-motion: reduce) { .bar i { transition: none; } .is-loading .bar i::after { animation: none; } }
 </style>
 </head>
@@ -283,13 +346,17 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
   <header class="head">
   <div class="head-top">
     <a class="brand" href="https://techlove.pl/" title="techlove.pl – strona główna"><img src="https://techlove.pl/wp-content/uploads/2026/05/new-logo-768x247.png" alt="techlove.pl" width="768" height="247" decoding="async"></a>
+    <div class="tabs" role="tablist" aria-label="Widok">
+      <button type="button" role="tab" class="tab" id="tab-avg" aria-selected="true" aria-controls="rows-avg">Średnio na 100 km</button>
+      <button type="button" role="tab" class="tab" id="tab-mine" aria-selected="false" aria-controls="calc">Mój przypadek</button>
+    </div>
     <button class="dl" id="dl" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v8M4.5 6.8 8 10.3l3.5-3.5M2.5 13.5h11"/></svg><span>Pobierz obrazek</span></button>
     <div class="kicker" id="kicker">100 km realnej jazdy</div>
   </div>
-  <h1><span id="h-home">11 zł</span> z gniazdka,<br><span class="hot" id="h-h2">75 zł na wodorze</span><span class="dot">.</span></h1>
+  <h1><span id="h-home">11 zł z gniazdka,</span><br><span class="hot" id="h-h2">75 zł na wodorze</span><span class="dot">.</span></h1>
   </header>
 
-  <div class="rows">
+  <div class="rows" id="rows-avg" role="tabpanel" aria-labelledby="tab-avg">
 
   <section class="row c-home" id="r-home">
     <div class="ico" aria-hidden="true">🏠</div>
@@ -354,6 +421,46 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
     <div class="cell"><div class="lbl">Wodór vs DC</div><div class="big r" id="x-pct">+38% drożej</div><div class="note">niż najdroższe szybkie ładowarki</div></div>
   </section>
 
+
+  <section class="calc" id="calc" role="tabpanel" aria-labelledby="tab-mine" hidden>
+    <div class="field wide"><label for="c-tariff">Ładowanie elektryka – taryfa lub ładowarka</label><select id="c-tariff"></select></div>
+    <div class="field"><label for="c-ev">Elektryk kWh/100 km</label><input autocomplete="off" id="c-ev" type="text" inputmode="decimal" value="17.5"></div>
+    <div class="field" id="f-price" hidden><label for="c-price">Twoja cena zł/kWh</label><input autocomplete="off" id="c-price" type="text" inputmode="decimal" value="0.30"></div>
+    <div class="field"><label for="c-km">Przebieg km/rok</label><input autocomplete="off" id="c-km" type="text" inputmode="numeric" value="15000"></div>
+    <div class="field"><label for="c-pb">Benzyna l/100 km</label><input autocomplete="off" id="c-pb" type="text" inputmode="decimal" value="7.0"></div>
+    <div class="field"><label for="c-on">Diesel l/100 km</label><input autocomplete="off" id="c-on" type="text" inputmode="decimal" value="6.0"></div>
+    <div class="field"><label for="c-lpg">LPG l/100 km</label><input autocomplete="off" id="c-lpg" type="text" inputmode="decimal" value="8.8"></div>
+    <p class="calc-note" id="c-note"></p>
+    <p class="calc-sum" id="c-sum"></p>
+  </section>
+
+  <div class="rows calc-rows" id="rows-mine" hidden>
+    <section class="row c-mev" id="r-mev">
+      <div class="ico" aria-hidden="true">🔋</div>
+      <div class="txt"><div class="name"><span id="n-mev">Twój elektryk</span><span class="badge-slot"></span></div><div class="sub" id="s-mev"></div></div>
+      <div class="val" id="v-mev"></div>
+      <div class="bar"><i id="b-mev"></i></div>
+    </section>
+    <section class="row c-mpb" id="r-mpb">
+      <div class="ico" aria-hidden="true">⛽</div>
+      <div class="txt"><div class="name"><span id="n-mpb">Twoje auto – benzyna Pb95</span><span class="badge-slot"></span></div><div class="sub" id="s-mpb"></div></div>
+      <div class="val" id="v-mpb"></div>
+      <div class="bar"><i id="b-mpb"></i></div>
+    </section>
+    <section class="row c-mon" id="r-mon">
+      <div class="ico" aria-hidden="true">🛢️</div>
+      <div class="txt"><div class="name"><span id="n-mon">Twoje auto – diesel ON</span><span class="badge-slot"></span></div><div class="sub" id="s-mon"></div></div>
+      <div class="val" id="v-mon"></div>
+      <div class="bar"><i id="b-mon"></i></div>
+    </section>
+    <section class="row c-mlpg" id="r-mlpg">
+      <div class="ico" aria-hidden="true">🔥</div>
+      <div class="txt"><div class="name"><span id="n-mlpg">Twoje auto – LPG</span><span class="badge-slot"></span></div><div class="sub" id="s-mlpg"></div></div>
+      <div class="val" id="v-mlpg"></div>
+      <div class="bar"><i id="b-mlpg"></i></div>
+    </section>
+  </div>
+
   <footer>
     <div class="line" id="f-line">Dane: Orlen H2 / Taryfy URE / Monitor Polski / e-petrol / elektromobilni.pl</div>
     <details><summary>Źródła</summary><div id="f-meta"></div></details>
@@ -385,13 +492,20 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
     h2row.parentNode.insertBefore(sec, h2row);
   }
   var lastWhen = "", lastDate = "";
+  var lastData = null, avgHead = ["11 zł z gniazdka,", "75 zł na wodorze"], mineHead = null;
+  var TAB = "avg";
+  function applyHead() {
+    var hd = TAB === "mine" && mineHead ? mineHead : avgHead;
+    $("h-home").textContent = hd[0];
+    $("h-h2").textContent = hd[1];
+  }
 
   // Dane wbudowane - identyczne z grafiką; używane, gdy data.json się nie wczyta.
   var DEFAULTS = {
     updated: "2026-10-06T15:00:00+02:00",
     distance_km: 100,
     consumption: { ev_kwh_min: 17, ev_kwh_max: 18, petrol_l: 7.0, diesel_l: 6.0, lpg_l: 8.8, h2_kg: 1.09, tomek_l: 15.0 },
-    prices: { home: 1.04, home_night: 0.63, ac: 1.75, dc_min: 2.00, dc_max: 3.00, pb95: 6.79, pb95_kind: "max", on: 7.88, on_kind: "max", pb98: 7.59, pb98_kind: "max", lpg: 3.22, h2: 69.0 },
+    prices: { home: 1.04, home_night: 0.63, home_day: 1.19, dyn_cheap: 0.45, ac: 1.75, dc_min: 2.00, dc_max: 3.00, pb95: 6.79, pb95_kind: "max", on: 7.88, on_kind: "max", pb98: 7.59, pb98_kind: "max", lpg: 3.22, h2: 69.0 },
     sources: {
       home: { name: "Prąd w domu: średnia G11 2026 z dystrybucją i opłatami", url: "https://biznes.interia.pl/gospodarka/news-ile-kosztuje-1-kwh-w-2026-roku-ceny-pradu-w-tauronie-pge-i-u,nId,23478259" },
       ac: { name: "Ranking cen ładowania – elektromobilni.pl", url: "https://elektromobilni.pl/ranking-cen-ladowania-w-polsce/" },
@@ -405,6 +519,7 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
 
   var $ = function (id) { return document.getElementById(id); };
   function pl(n, d) { return n.toLocaleString("pl-PL", { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  function setVal(el, text) { el.dataset.final = text; el.textContent = text; }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
 
   function render(D) {
@@ -428,10 +543,10 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
     if (!TOMEK) delete mid.tomek;
     var max = Math.max(rows.dcHi, Math.max.apply(null, KEYS.map(function (k) { return mid[k]; })));
 
-    $("kicker").textContent = km + " km realnej jazdy";
+    $("kicker").textContent = km + (TAB === "mine" ? " km – mój przypadek" : " km realnej jazdy");
     var homeBest = Math.min(rows.home, rows.night);
-    $("h-home").textContent = homeBest + " zł";
-    $("h-h2").textContent = rows.h2 + " zł na wodorze";
+    avgHead = [homeBest + " zł z gniazdka,", rows.h2 + " zł na wodorze"];
+    applyHead();
 
     $("s-home").textContent = pl(homeP, 2) + " zł/kWh z dystrybucją i opłatami • EV ~" + c.ev_kwh_min + "–" + c.ev_kwh_max + " kWh";
     $("s-night").textContent = pl(p.home_night != null ? p.home_night : 0.63, 2) + " zł/kWh z dystrybucją i opłatami • ładowanie w nocy";
@@ -448,18 +563,18 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
     $("s-lpg").textContent = "Śr. " + pl(p.lpg, 2) + " zł/l • Średnie auto ~" + pl(c.lpg_l, 1) + " l / 100 km (+25% vs benzyna)";
     $("s-h2").textContent = "Orlen " + pl(p.h2, p.h2 % 1 ? 2 : 0) + " zł/kg • Toyota Mirai ~" + pl(c.h2_kg, 1) + " kg / 100 km";
 
-    $("v-home").textContent = "~" + rows.home + " zł";
-    $("v-night").textContent = "~" + rows.night + " zł";
-    $("v-ac").textContent = "~" + rows.ac + " zł";
-    $("v-dc").textContent = "~" + rows.dcLo + "-" + rows.dcHi + " zł";
-    $("v-pb").textContent = "~" + rows.pb + " zł";
-    $("v-on").textContent = "~" + rows.on + " zł";
-    $("v-lpg").textContent = "~" + rows.lpg + " zł";
-    $("v-h2").textContent = "~" + rows.h2 + " zł";
+    setVal($("v-home"), "~" + rows.home + " zł");
+    setVal($("v-night"), "~" + rows.night + " zł");
+    setVal($("v-ac"), "~" + rows.ac + " zł");
+    setVal($("v-dc"), "~" + rows.dcLo + "-" + rows.dcHi + " zł");
+    setVal($("v-pb"), "~" + rows.pb + " zł");
+    setVal($("v-on"), "~" + rows.on + " zł");
+    setVal($("v-lpg"), "~" + rows.lpg + " zł");
+    setVal($("v-h2"), "~" + rows.h2 + " zł");
     if (TOMEK) {
       $("s-tomek").textContent = (p.pb98_kind === "avg" ? "Śr. " : "Maks. ") + pl(p.pb98 || 7.59, 2) +
         " zł/l (Pb98/100) • spalanie ~" + pl(c.tomek_l || 15, 1) + " l / 100 km";
-      $("v-tomek").textContent = "~" + rows.tomek + " zł";
+      setVal($("v-tomek"), "~" + rows.tomek + " zł");
     }
 
     KEYS.forEach(function (k) {
@@ -495,7 +610,159 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
     lastDate = String(D.updated || "").slice(0, 10);
     $("f-line").textContent = (D.footer || DEFAULTS.footer) + (when ? " · " + when : "");
     $("f-meta").innerHTML = links.join(" · ");
+    lastData = D;
+    buildTariffs();
+    calc();
   }
+
+
+  // ---------- Zakładka „Mój przypadek” ----------
+  var STORE_KEY = "koszt100-moj";
+  var FIELDS = ["c-tariff", "c-price", "c-ev", "c-km", "c-pb", "c-on", "c-lpg"];
+
+  function tariffs(p) {
+    return [
+      { id: "g11",   name: "G11 – całodobowa (dom)", price: p.home },
+      { id: "g12n",  name: "G12 / G12w – noc i weekend (dom)", price: p.home_night },
+      { id: "g12d",  name: "G12 / G12w – dzień (dom)", price: p.home_day },
+      { id: "dyn",   name: "Taryfa dynamiczna – tanie godziny (dom)", price: p.dyn_cheap },
+      { id: "ac",    name: "Publiczna ładowarka AC", price: p.ac },
+      { id: "dcmin", name: "Szybka ładowarka DC – z abonamentem", price: p.dc_min },
+      { id: "dcmax", name: "Szybka ładowarka DC – bez abonamentu", price: p.dc_max },
+      { id: "own",   name: "Własna cena (np. fotowoltaika, firma)", price: null }
+    ];
+  }
+
+  function buildTariffs() {
+    var sel = $("c-tariff"), cur = sel.value || "g12n";
+    sel.innerHTML = tariffs(lastData.prices).map(function (t) {
+      return '<option value="' + t.id + '">' + esc(t.name) + (t.price != null ? " · " + pl(t.price, 2) + " zł/kWh" : "") + "</option>";
+    }).join("");
+    sel.value = cur;
+    if (!sel.value) sel.value = "g12n";
+  }
+
+  function numIn(id, def) {
+    var v = parseFloat(String($(id).value).replace(",", "."));
+    return isFinite(v) && v >= 0 ? v : def;
+  }
+
+  function calc() {
+    if (!lastData) return;
+    var p = lastData.prices, f = (lastData.distance_km || 100) / 100;
+    var list = tariffs(p), tid = $("c-tariff").value || "g12n";
+    var t = list.filter(function (x) { return x.id === tid; })[0] || list[1];
+    $("f-price").hidden = t.id !== "own";
+    var price = t.id === "own" ? numIn("c-price", 0.3) : t.price;
+    var kwh = numIn("c-ev", 17.5), lpb = numIn("c-pb", 7), lon = numIn("c-on", 6), llpg = numIn("c-lpg", 8.8), km = numIn("c-km", 15000);
+
+    var cost = { ev: price * kwh * f, pb: p.pb95 * lpb * f, on: p.on * lon * f, lpg: p.lpg * llpg * f };
+    var r = {}; Object.keys(cost).forEach(function (k) { r[k] = Math.round(cost[k]); });
+    var max = Math.max(r.ev, r.pb, r.on, r.lpg, 1);
+
+    $("n-mev").textContent = "Twój elektryk – " + t.name.replace(/ \(dom\)$/, "");
+    $("s-mev").textContent = pl(price, 2) + " zł/kWh • zużycie " + pl(kwh, 1) + " kWh / 100 km";
+    $("s-mpb").textContent = (p.pb95_kind === "avg" ? "Śr. " : "Maks. ") + pl(p.pb95, 2) + " zł/l • spalanie " + pl(lpb, 1) + " l / 100 km";
+    $("s-mon").textContent = (p.on_kind === "avg" ? "Śr. " : "Maks. ") + pl(p.on, 2) + " zł/l • spalanie " + pl(lon, 1) + " l / 100 km";
+    $("s-mlpg").textContent = "Śr. " + pl(p.lpg, 2) + " zł/l • spalanie " + pl(llpg, 1) + " l / 100 km";
+
+    var keys = ["ev", "pb", "on", "lpg"];
+    keys.forEach(function (k) {
+      setVal($("v-m" + k), "~" + r[k] + " zł");
+      var b = $("b-m" + k);
+      b.dataset.w = Math.max(3, r[k] / max * 100).toFixed(1) + "%";
+      if (introDone) b.style.width = b.dataset.w;
+      var row = $("r-m" + k); row.classList.remove("best", "worst");
+      row.querySelector(".badge-slot").innerHTML = "";
+    });
+    var order = keys.slice().sort(function (a, b) { return cost[a] - cost[b]; });
+    var box = $("rows-mine");
+    order.forEach(function (k) { box.appendChild($("r-m" + k)); });
+    $("r-m" + order[0]).classList.add("best");
+    $("r-m" + order[0]).querySelector(".badge-slot").innerHTML = '<span class="badge lead">Najtaniej</span>';
+    $("r-m" + order[3]).classList.add("worst");
+    $("r-m" + order[3]).querySelector(".badge-slot").innerHTML = '<span class="badge top">Najdrożej</span>';
+
+    // Podsumowanie: elektryk vs najtańsze z aut spalinowych i vs benzyna
+    var diff = cost.pb - cost.ev, yearly = diff * km / 100 / f;
+    var pct = cost.pb > 0 ? Math.round(Math.abs(diff) / cost.pb * 100) : 0;
+    var txt;
+    if (diff >= 0.5) {
+      txt = "Elektrykiem płacisz <b>" + Math.round(diff) + " zł mniej</b> na 100 km niż benzyną (−" + pct + "%)";
+      if (km > 0) txt += ". Przy " + km.toLocaleString("pl-PL") + " km rocznie to ok. <b>" + Math.round(yearly / 10) * 10 + " zł</b> oszczędności w roku.";
+      else txt += ".";
+    } else if (diff <= -0.5) {
+      txt = "Przy tej taryfie elektryk wychodzi <b class=\"r\">" + Math.round(-diff) + " zł drożej</b> na 100 km niż benzyna (+" + pct + "%)";
+      if (km > 0) txt += ", czyli ok. <b class=\"r\">" + Math.round(-yearly / 10) * 10 + " zł</b> rocznie przy " + km.toLocaleString("pl-PL") + " km.";
+      else txt += ".";
+    } else {
+      txt = "Elektryk i benzyna kosztują Cię praktycznie tyle samo na 100 km.";
+    }
+    $("c-sum").innerHTML = txt;
+    $("c-note").textContent = "Ceny paliw dziś: Pb95 " + pl(p.pb95, 2) + " · ON " + pl(p.on, 2) + " · LPG " + pl(p.lpg, 2) +
+      " zł/l. Ceny prądu w domu z dystrybucją i opłatami.";
+    mineHead = [r.ev + " zł Twoim elektrykiem,", r.pb + " zł benzyną"];
+    applyHead();
+    save();
+  }
+
+  function save() {
+    try {
+      var o = { tab: TAB };
+      FIELDS.forEach(function (id) { o[id] = $(id).value; });
+      localStorage.setItem(STORE_KEY, JSON.stringify(o));
+    } catch (e) {}
+  }
+  function restore() {
+    try {
+      var o = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
+      if (!o) return null;
+      FIELDS.forEach(function (id) { if (o[id] != null && id !== "c-tariff") $(id).value = o[id]; });
+      if (o["c-tariff"]) $("c-tariff").dataset.want = o["c-tariff"];
+      return o;
+    } catch (e) { return null; }
+  }
+
+  function growBars(container) {
+    if (!introDone || reduceMotion) return;
+    var bars = [].slice.call(container.querySelectorAll(".bar i"));
+    bars.forEach(function (b) { b.style.transitionDelay = "0s"; b.style.width = "0"; });
+    void container.offsetWidth;
+    bars.forEach(function (b, i) { b.style.transitionDelay = (i * 0.07) + "s"; b.style.width = b.dataset.w; });
+  }
+
+  function setTab(t, quiet) {
+    TAB = t === "mine" ? "mine" : "avg";
+    var mine = TAB === "mine";
+    $("tab-avg").setAttribute("aria-selected", String(!mine));
+    $("tab-mine").setAttribute("aria-selected", String(mine));
+    $("rows-avg").hidden = mine;
+    document.querySelector(".sheet.live").classList.toggle("is-mine", mine);
+    document.querySelector(".live .summary").hidden = mine;
+    $("calc").hidden = !mine;
+    $("rows-mine").hidden = !mine;
+    $("kicker").textContent = (lastData ? lastData.distance_km : 100) + (mine ? " km – mój przypadek" : " km realnej jazdy");
+    applyHead();
+    if (!quiet) {
+      growBars(mine ? $("rows-mine") : $("rows-avg"));
+      try { history.replaceState(null, "", mine ? "#moj-przypadek" : location.pathname + location.search); } catch (e) {}
+    }
+    save();
+  }
+
+  $("tab-avg").addEventListener("click", function () { setTab("avg"); });
+  $("tab-mine").addEventListener("click", function () { setTab("mine"); });
+  [].slice.call(document.querySelectorAll(".tabs .tab")).forEach(function (el) {
+    el.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+        var next = TAB === "avg" ? "mine" : "avg"; setTab(next); $("tab-" + next).focus(); e.preventDefault();
+      }
+    });
+  });
+  FIELDS.forEach(function (id) {
+    $(id).addEventListener("input", calc);
+    $(id).addEventListener("change", calc);
+  });
 
   // ---------- Pobierz obrazek ----------
   function buildPoster() {
@@ -504,6 +771,19 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
     var sheet = document.querySelector(".sheet").cloneNode(true);
     sheet.classList.remove("live");
     sheet.removeAttribute("aria-live");
+    var mine = TAB === "mine";
+    var drop = mine ? ["#rows-avg", ".summary"] : ["#calc", "#rows-mine"];
+    drop.concat([".tabs"]).forEach(function (s) { var el = sheet.querySelector(s); if (el) el.remove(); });
+    if (mine) {
+      var c = sheet.querySelector("#calc"), t = $("c-tariff"), lab = t.options[t.selectedIndex] ? t.options[t.selectedIndex].text : "";
+      var info = document.createElement("div");
+      info.className = "calc-poster";
+      var nv = function (id) { return esc(String($(id).value).replace(".", ",")); };
+      info.innerHTML = "<b>Moje założenia:</b> " + esc(lab) + " · elektryk " + nv("c-ev") + " kWh · benzyna " +
+        nv("c-pb") + " l · diesel " + nv("c-on") + " l · LPG " + nv("c-lpg") + " l / 100 km<br>" +
+        $("c-sum").innerHTML;
+      c.parentNode.replaceChild(info, c);
+    }
     sheet.querySelectorAll("[id]").forEach(function (el) { el.removeAttribute("id"); });
     sheet.querySelectorAll(".dl, footer details").forEach(function (el) { el.remove(); });
     var line = sheet.querySelector("footer .line");
@@ -538,7 +818,7 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
     (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve())
       .then(function () { return window.htmlToImage.toBlob(poster, opts); })
       .then(function (blob) {
-        saveBlob(blob, "techlove-koszt-100km-" + (TOMEK ? "tomek-" : "") + (lastDate || new Date().toISOString().slice(0, 10)) + ".png");
+        saveBlob(blob, "techlove-koszt-100km-" + (TOMEK ? "tomek-" : "") + (TAB === "mine" ? "moj-" : "") + (lastDate || new Date().toISOString().slice(0, 10)) + ".png");
         label.textContent = "Pobrano";
       })
       .catch(function () { label.textContent = "Nie udało się – spróbuj ponownie"; })
@@ -553,15 +833,15 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function countUp(el, finalText, delay, dur) {
-    var nums = (finalText.match(/\d+/g) || []).map(Number);
-    if (!nums.length) { el.textContent = finalText; return; }
     var t0 = null;
     function frame(ts) {
+      var target = el.dataset.final || finalText;   // zawsze najnowsza wartość
+      var nums = (target.match(/\d+/g) || []).map(Number);
       if (t0 === null) t0 = ts + delay;
       var p = Math.min(1, Math.max(0, (ts - t0) / dur));
       var e = 1 - Math.pow(1 - p, 3), i = 0;
-      el.textContent = finalText.replace(/\d+/g, function () { return Math.round(nums[i++] * e); });
-      if (p < 1) requestAnimationFrame(frame); else el.textContent = finalText;
+      el.textContent = target.replace(/\d+/g, function () { return Math.round(nums[i++] * e); });
+      if (p < 1) requestAnimationFrame(frame); else el.textContent = target;
     }
     requestAnimationFrame(frame);
   }
@@ -593,7 +873,10 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
   var introTimer = setTimeout(intro, 1200);
   function startIntro() { clearTimeout(introTimer); requestAnimationFrame(intro); }
 
+  var saved = restore();
   render(DEFAULTS);
+  if ($("c-tariff").dataset.want) { $("c-tariff").value = $("c-tariff").dataset.want; calc(); }
+  setTab(location.hash === "#moj-przypadek" ? "mine" : (saved && saved.tab === "mine" ? "mine" : "avg"), true);
   fetch(DATA_URL + (DATA_URL.indexOf("?") < 0 ? "?" : "&") + "t=" + Date.now(), { cache: "no-store" })
     .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(function (d) {

@@ -16,7 +16,11 @@
     "home_night_pln_kwh": 0.63,
     "home_night_note": "Średni łączny koszt 1 kWh w tańszej (nocnej) strefie taryf G12/G12w, 2026, brutto z dystrybucją: Enea 0,59, Tauron 0,63-0,64, PGE 0,61-0,69, Energa 0,62-0,65. Aktualizuj raz w roku.",
     "h2_pln_kg": 69.0,
-    "h2_note": "Cena detaliczna Orlen na stacjach ogólnodostępnych. Orlen nie publikuje cennika H2 w formie do pobrania - zmień ręcznie, gdy cena się zmieni."
+    "h2_note": "Cena detaliczna Orlen na stacjach ogólnodostępnych. Orlen nie publikuje cennika H2 w formie do pobrania - zmień ręcznie, gdy cena się zmieni.",
+    "home_day_pln_kwh": 1.19,
+    "home_day_note": "Strefa droższa (dzień) taryf G12/G12w 2026, brutto z dystrybucją: zakres 1,08-1,30 zł (Enea, Tauron, PGE, Energa).",
+    "dyn_cheap_pln_kwh": 0.45,
+    "dyn_cheap_note": "Taryfa dynamiczna, tanie godziny (noc/południe): ok. 0,40-0,50 zł/kWh (AutoCentrum, 2026)."
   },
   "fallback": {
     "ac_pln_kwh": 1.75,

@@ -62,3 +62,16 @@ python3 update_prices.py   # cron np. 47 10,15 * * *
 
 Po każdej zmianie `index.html` odtwórz ją: `python3 build_tomek.py`. Na serwer wgrywasz oba pliki do folderu `/100km/`.
 
+## Zakładka „Mój przypadek”
+
+Kalkulator: wybór taryfy lub ładowarki dla elektryka, własne zużycie (kWh/100 km, l/100 km dla benzyny, diesla i LPG) i roczny przebieg. Ceny paliw i ładowarek publicznych są brane z `data.json`, ceny taryf domowych z `config.json`:
+
+| Taryfa | Klucz w config.json | Wartość |
+|---|---|---|
+| G11 | `home_pln_kwh` | 1,04 |
+| G12/G12w noc i weekend | `home_night_pln_kwh` | 0,63 |
+| G12/G12w dzień | `home_day_pln_kwh` | 1,19 |
+| Dynamiczna – tanie godziny | `dyn_cheap_pln_kwh` | 0,45 |
+
+Opcja „Własna cena” pozwala wpisać dowolną stawkę (np. fotowoltaika). Wpisane wartości zapamiętują się w przeglądarce. Link prosto do kalkulatora: `…/100km/#moj-przypadek`.
+
