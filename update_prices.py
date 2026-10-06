@@ -198,6 +198,7 @@ def main():
     prices.update({k: v for k, v in old.get("prices", {}).items()})
     prices.pop("g12w", None)
     prices["home"] = cfg["manual"]["home_pln_kwh"]
+    prices["home_night"] = cfg["manual"]["home_night_pln_kwh"]
     prices["h2"] = cfg["manual"]["h2_pln_kg"]
     sources = old.get("sources", {})
     used = []
@@ -277,6 +278,9 @@ def main():
     sources["home"] = {"name": "Prąd w domu: średnia G11 2026 z dystrybucją i opłatami (PGE, Tauron, Enea, Energa, E.ON)",
                        "url": "https://biznes.interia.pl/gospodarka/news-ile-kosztuje-1-kwh-w-2026-roku-ceny-pradu-w-tauronie-pge-i-u,nId,23478259",
                        "auto": False}
+    sources["home_night"] = {"name": "Prąd w nocy: średnia strefy tańszej G12/G12w 2026 z dystrybucją (Enea, Tauron, PGE, Energa)",
+                             "url": "https://biznes.interia.pl/gospodarka/news-ile-kosztuje-1-kwh-w-2026-roku-ceny-pradu-w-tauronie-pge-i-u,nId,23478259",
+                             "auto": False}
     sources.setdefault("h2", {"name": "Orlen H2", "url": "https://www.orlen.pl", "auto": False})
     sources.setdefault("consumption", {"name": "Zużycie: KE – dane OBFCM (realne spalanie ~20% powyżej WLTP)",
                                        "url": "https://climate.ec.europa.eu/news-other-reads/news/first-commission-report-real-world-co2-emissions-cars-and-vans-using-data-board-fuel-consumption-2024-03-18_en",
