@@ -7,7 +7,7 @@ Aktualizuje data.json dla strony "Koszt 100 km".
           publiczne API ELI Sejmu). Gdy cena maksymalna nie obowiązuje -> średnia e-petrol.pl.
   - LPG: średnia krajowa e-petrol.pl (aktualizowana co tydzień).
   - AC / DC: ranking cen ładowania elektromobilni.pl (stawki GreenWay i IONITY).
-Wartości ręczne (config.json): taryfa G12w (URE) i cena wodoru Orlen.
+Wartości ręczne (config.json): średnia cena prądu w domu (G11 z dystrybucją) i cena wodoru Orlen.
 
 Gdy któreś źródło nie odpowie albo zmieni układ strony, zostaje poprzednia wartość
 z data.json - strona nigdy nie pokaże pustego miejsca.
@@ -196,7 +196,8 @@ def main():
         "on": fb["on_pln_l"], "on_kind": fb["on_kind"], "lpg": fb["lpg_pln_l"],
     }
     prices.update({k: v for k, v in old.get("prices", {}).items()})
-    prices["g12w"] = cfg["manual"]["g12w_pln_kwh"]
+    prices.pop("g12w", None)
+    prices["home"] = cfg["manual"]["home_pln_kwh"]
     prices["h2"] = cfg["manual"]["h2_pln_kg"]
     sources = old.get("sources", {})
     used = []
@@ -272,7 +273,10 @@ def main():
         status["elektromobilni"] = f"błąd: {e}"[:200]
         log(f"Ranking ładowania: zostają poprzednie wartości ({e})")
 
-    sources.setdefault("g12w", {"name": "Taryfy URE", "url": "https://www.ure.gov.pl/pl/energia-elektryczna/taryfy", "auto": False})
+    sources.pop("g12w", None)
+    sources["home"] = {"name": "Prąd w domu: średnia G11 2026 z dystrybucją i opłatami (PGE, Tauron, Enea, Energa, E.ON)",
+                       "url": "https://biznes.interia.pl/gospodarka/news-ile-kosztuje-1-kwh-w-2026-roku-ceny-pradu-w-tauronie-pge-i-u,nId,23478259",
+                       "auto": False}
     sources.setdefault("h2", {"name": "Orlen H2", "url": "https://www.orlen.pl", "auto": False})
     sources.setdefault("consumption", {"name": "Zużycie: KE – dane OBFCM (realne spalanie ~20% powyżej WLTP)",
                                        "url": "https://climate.ec.europa.eu/news-other-reads/news/first-commission-report-real-world-co2-emissions-cars-and-vans-using-data-board-fuel-consumption-2024-03-18_en",

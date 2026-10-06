@@ -10,8 +10,8 @@
     "h2_kg": 1.09
   },
   "manual": {
-    "g12w_pln_kwh": 0.65,
-    "g12w_note": "Taryfa G12w, strefa pozaszczytowa, energia + dystrybucja brutto. Aktualizuj raz w roku po zatwierdzeniu taryf przez URE.",
+    "home_pln_kwh": 1.04,
+    "home_note": "Średni łączny koszt 1 kWh dla gospodarstw domowych, taryfa G11, 2026: energia + dystrybucja + opłaty zmienne + VAT, średnio z PGE (1,10), Tauron (0,97), Enea (0,98), Energa (1,10), E.ON (0,96). Stałe opłaty miesięczne nie są wliczone. Aktualizuj raz w roku po nowych taryfach URE.",
     "h2_pln_kg": 69.0,
     "h2_note": "Cena detaliczna Orlen na stacjach ogólnodostępnych. Orlen nie publikuje cennika H2 w formie do pobrania - zmień ręcznie, gdy cena się zmieni."
   },
