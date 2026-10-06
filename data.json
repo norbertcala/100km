@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-06T17:51:55+02:00",
+  "updated": "2026-10-06T17:58:29+02:00",
   "distance_km": 100,
   "consumption": {
     "ev_kwh_min": 17,
@@ -7,7 +7,8 @@
     "petrol_l": 7.0,
     "diesel_l": 6.0,
     "lpg_l": 8.8,
-    "h2_kg": 1.09
+    "h2_kg": 1.09,
+    "tomek_l": 15.0
   },
   "prices": {
     "ac": 1.75,
@@ -18,6 +19,8 @@
     "on": 7.82,
     "on_kind": "max",
     "lpg": 3.16,
+    "pb98": 7.66,
+    "pb98_kind": "max",
     "h2": 69.0,
     "home": 1.04,
     "home_night": 0.63
@@ -67,6 +70,11 @@
       "name": "Prąd w nocy: średnia strefy tańszej G12/G12w 2026 z dystrybucją (Enea, Tauron, PGE, Energa)",
       "url": "https://biznes.interia.pl/gospodarka/news-ile-kosztuje-1-kwh-w-2026-roku-ceny-pradu-w-tauronie-pge-i-u,nId,23478259",
       "auto": false
+    },
+    "pb98": {
+      "name": "Monitor Polski – obwieszczenie ME z 05.10.2026",
+      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/968/text.pdf",
+      "auto": true
     }
   },
   "footer": "Dane: Orlen H2 / Taryfy URE / Monitor Polski / AutoCentrum / elektromobilni.pl",
