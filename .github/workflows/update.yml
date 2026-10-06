@@ -1,0 +1,28 @@
+name: Aktualizuj ceny
+
+on:
+  schedule:
+    # 10:47 i 15:47 czasu PL (obwieszczenie o cenie maks. wychodzi zwykle ok. 10:00)
+    - cron: "47 8,13 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pypdf
+      - run: python update_prices.py
+      - name: Zapisz zmiany
+        run: |
+          git config user.name "koszt-100km-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data.json
+          git diff --cached --quiet || git commit -m "Aktualizacja cen $(date +'%Y-%m-%d %H:%M')"
+          git push

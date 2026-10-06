@@ -1,0 +1,22 @@
+{
+  "updated": "2026-10-06T15:00:00+02:00",
+  "distance_km": 100,
+  "consumption": { "ev_kwh_min": 17, "ev_kwh_max": 18, "petrol_l": 7.0, "h2_kg": 1.09 },
+  "prices": {
+    "g12w": 0.65,
+    "ac": 1.75,
+    "dc_min": 2.00,
+    "dc_max": 3.00,
+    "pb95": 6.79,
+    "pb95_kind": "max",
+    "h2": 69.0
+  },
+  "sources": {
+    "g12w": { "name": "Taryfy URE", "url": "https://www.ure.gov.pl/pl/energia-elektryczna/taryfy", "auto": false },
+    "ac": { "name": "Ranking cen ładowania – elektromobilni.pl", "url": "https://elektromobilni.pl/ranking-cen-ladowania-w-polsce/", "auto": true },
+    "dc": { "name": "Ranking cen ładowania – elektromobilni.pl", "url": "https://elektromobilni.pl/ranking-cen-ladowania-w-polsce/", "auto": true },
+    "pb95": { "name": "Monitor Polski – obwieszczenie Ministra Energii", "url": "https://api.sejm.gov.pl/eli/acts/MP/2026", "auto": true },
+    "h2": { "name": "Orlen H2", "url": "https://www.orlen.pl", "auto": false }
+  },
+  "footer": "Dane: Orlen H2 / Taryfy URE / E-petrol"
+}

@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Koszt 100 km</title>
+<meta name="description" content="Ile kosztuje przejechanie 100 km: prąd z gniazdka, ładowarki AC i DC, benzyna Pb95 i wodór. Ceny aktualizowane automatycznie.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" crossorigin="anonymous">
+<style>
+/* Layout: cały widok na jednym ekranie. Telefon / pionowo: jedna zwarta kolumna.
+   Komputer / poziomo: lewa kolumna (tytuł, podsumowanie, źródła), prawa (5 wierszy kosztów).
+   Wszystkie wymiary w rem; rozmiar rem skaluje się do wysokości i szerokości okna.
+   Celowo jeden, ciemny motyw - wierna kopia grafiki. */
+:root {
+  --bg: #060914;
+  --card: #0f1424;
+  --card-line: #1d2436;
+  --track: #1e2536;
+  --fg: #f4f6fb;
+  --muted: #9aa3b5;
+  --faint: #6b7385;
+  --green: #34d399;
+  --green-line: #1f7f68;
+  --cyan: #22d3ee;
+  --violet: #a855f7;
+  --violet-text: #c084fc;
+  --amber: #f59e0b;
+  --amber-text: #fbbf24;
+  --rose: #f43f5e;
+  --rose-text: #fb5a71;
+  --rose-line: #9f2a44;
+  --pink: #ec4899;
+  --orange: #fb923c;
+  --display: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color-scheme: dark;
+  /* skala: ogranicza ją i wysokość, i szerokość ekranu */
+  --u: clamp(10px, min(1.62vh, 3.9vw), 17px);
+  --u: clamp(10px, min(1.62dvh, 3.9vw), 17px);
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+html { background: var(--bg); }
+body {
+  margin: 0;
+  background:
+    radial-gradient(calc(60 * var(--u)) calc(30 * var(--u)) at 105% -5%, rgba(244, 63, 94, .10), transparent 60%),
+    radial-gradient(calc(50 * var(--u)) calc(26 * var(--u)) at -10% 105%, rgba(52, 211, 153, .08), transparent 60%),
+    var(--bg);
+  color: var(--fg);
+  font-family: var(--display);
+  padding-inline: 16px;
+  padding-block: 0;
+  -webkit-font-smoothing: antialiased;
+}
+.sheet {
+  max-width: calc(46 * var(--u));
+  min-height: 100%;
+  margin: 0 auto;
+  padding-block: calc(1.1 * var(--u));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: calc(0.8 * var(--u));
+}
+.head { display: flex; flex-direction: column; }
+.kicker { align-self: flex-end; font-family: var(--mono); font-size: calc(0.8 * var(--u)); color: var(--muted); letter-spacing: .02em; }
+h1 {
+  margin: calc(0.15 * var(--u)) 0 calc(0.4 * var(--u));
+  font-weight: 800;
+  font-size: calc(2.45 * var(--u));
+  line-height: 1.12;
+  letter-spacing: -.035em;
+  text-wrap: balance;
+}
+h1 .hot {
+  background: linear-gradient(90deg, var(--rose) 0%, var(--pink) 45%, var(--orange) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+h1 .dot { color: var(--amber-text); }
+
+.rows { display: grid; gap: calc(0.6 * var(--u)); }
+.row {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-radius: calc(1.15 * var(--u));
+  padding: calc(0.85 * var(--u)) calc(1.1 * var(--u));
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  column-gap: calc(0.75 * var(--u));
+  row-gap: calc(0.65 * var(--u));
+  align-items: center;
+  align-content: center;
+}
+.row.best { border: 2px solid var(--green-line); box-shadow: 0 0 0 1px rgba(52,211,153,.06), 0 10px 40px -20px rgba(52,211,153,.35); }
+.row.worst { border: 2px solid var(--rose-line); box-shadow: 0 10px 40px -20px rgba(244,63,94,.4); }
+.ico { font-size: calc(1.25 * var(--u)); line-height: 1; width: calc(1.6 * var(--u)); text-align: center; }
+.txt { min-width: 0; }
+.name { display: flex; flex-wrap: wrap; align-items: center; gap: calc(0.3 * var(--u)) calc(0.65 * var(--u)); font-weight: 700; font-size: calc(1.12 * var(--u)); letter-spacing: -.01em; line-height: 1.25; }
+.sub { margin-top: calc(0.15 * var(--u)); font-size: calc(0.82 * var(--u)); line-height: 1.35; color: var(--muted); }
+.val { font-family: var(--mono); font-weight: 800; font-size: calc(1.75 * var(--u)); letter-spacing: -.01em; white-space: nowrap; text-align: right; font-variant-numeric: tabular-nums; }
+.bar { grid-column: 1 / -1; height: calc(0.6 * var(--u)); border-radius: 99px; background: var(--track); overflow: hidden; }
+.bar i { display: block; height: 100%; border-radius: inherit; transition: width .9s cubic-bezier(.2,.8,.2,1); }
+
+.badge { font-size: calc(0.7 * var(--u)); font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: calc(0.22 * var(--u)) calc(0.6 * var(--u)); border-radius: calc(0.45 * var(--u)); white-space: nowrap; }
+.badge.lead { background: var(--green); color: #052e22; }
+.badge.top { background: rgba(244,63,94,.16); color: var(--rose-text); border: 1px solid var(--rose-line); }
+
+.c-home .val { color: var(--green); } .c-home .bar i { background: linear-gradient(90deg, #22c08a, var(--green)); }
+.c-ac .val { color: var(--cyan); } .c-ac .bar i { background: var(--cyan); }
+.c-dc .val { color: var(--violet-text); } .c-dc .bar i { background: var(--violet); }
+.c-pb .val { color: var(--amber-text); } .c-pb .bar i { background: var(--amber); }
+.c-h2 .val { color: var(--rose-text); } .c-h2 .bar i { background: linear-gradient(90deg, #e11d48, var(--pink)); }
+
+.summary {
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-radius: calc(1.15 * var(--u));
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  padding: calc(1 * var(--u)) calc(0.5 * var(--u));
+  text-align: center;
+}
+.summary .sep { background: var(--card-line); }
+.summary .cell { display: flex; flex-direction: column; gap: calc(0.3 * var(--u)); padding-inline: calc(0.5 * var(--u)); min-width: 0; }
+.summary .lbl { font-size: calc(0.74 * var(--u)); font-weight: 600; color: var(--muted); letter-spacing: .07em; text-transform: uppercase; }
+.summary .big { font-size: calc(1.55 * var(--u)); font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.summary .big.g { color: var(--green); }
+.summary .big.r { color: var(--rose-text); }
+.summary .note { font-size: calc(0.8 * var(--u)); color: var(--muted); }
+
+footer { padding-top: calc(0.65 * var(--u)); border-top: 1px solid var(--card-line); font-family: var(--mono); font-size: calc(0.74 * var(--u)); color: var(--muted); display: flex; flex-direction: column; gap: calc(0.35 * var(--u)); }
+footer .line { display: flex; align-items: center; gap: calc(0.55 * var(--u)); flex-wrap: wrap; }
+footer .line::before { content: ""; width: calc(0.45 * var(--u)); height: calc(0.45 * var(--u)); border-radius: 50%; background: var(--faint); flex: none; }
+footer details { font-size: calc(0.68 * var(--u)); color: var(--faint); line-height: 1.6; }
+footer summary { cursor: pointer; width: fit-content; }
+footer summary:focus-visible { outline: 1px solid var(--muted); outline-offset: 2px; }
+footer a { color: var(--muted); text-decoration: none; border-bottom: 1px dotted var(--faint); }
+footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
+
+.foot-row { display: flex; align-items: center; justify-content: space-between; gap: calc(0.6 * var(--u)); flex-wrap: wrap; }
+.dl {
+  display: inline-flex; align-items: center; gap: calc(0.4 * var(--u));
+  font: 600 calc(0.72 * var(--u)) / 1 var(--mono);
+  color: var(--fg); background: var(--card);
+  border: 1px solid var(--card-line); border-radius: 99px;
+  padding: calc(0.42 * var(--u)) calc(0.85 * var(--u));
+  cursor: pointer; transition: border-color .2s, color .2s;
+}
+.dl svg { width: calc(0.85 * var(--u)); height: calc(0.85 * var(--u)); }
+.dl:hover { border-color: var(--green-line); color: var(--green); }
+.dl:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+.dl[disabled] { opacity: .6; cursor: progress; }
+
+/* Obrazek do pobrania: stały układ 814 px, jak oryginalna grafika */
+.poster {
+  --u: 16px;
+  position: fixed; left: -20000px; top: 0;
+  width: 814px;
+  padding-inline: 36px;
+  color: var(--fg);
+  font-family: var(--display);
+  background:
+    radial-gradient(960px 480px at 105% -5%, rgba(244, 63, 94, .10), transparent 60%),
+    radial-gradient(800px 420px at -10% 105%, rgba(52, 211, 153, .08), transparent 60%),
+    var(--bg);
+}
+.poster .sheet { max-width: none; min-height: 0; padding-block: 34px 26px; gap: 18px; justify-content: flex-start; }
+.poster .kicker { font-size: 14px; }
+.poster h1 { font-size: 44px; margin: 6px 0 14px; }
+.poster .rows { gap: 18px; }
+.poster .row { padding: 20px 24px; row-gap: 16px; column-gap: 14px; border-radius: 22px; }
+.poster .ico { font-size: 22px; width: 28px; }
+.poster .name { font-size: 19px; }
+.poster .sub { font-size: 14px; margin-top: 4px; }
+.poster .val { font-size: 31px; }
+.poster .bar { height: 11px; }
+.poster .badge { font-size: 12.5px; }
+.poster .summary { margin-top: 8px; padding: 26px 16px; border-radius: 22px; }
+.poster .summary .lbl { font-size: 13.5px; }
+.poster .summary .big { font-size: 27px; }
+.poster .summary .note { font-size: 14px; }
+.poster footer { margin-top: 6px; font-size: 13.5px; gap: 10px; padding-top: 16px; }
+.poster .stamp { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+.poster .stamp b { color: var(--green); font-weight: 700; }
+
+/* Telefon: wartość zostaje po prawej, opisy drobniejsze */
+@media (max-width: 520px) {
+  .live .row { padding: calc(0.75 * var(--u)) calc(0.85 * var(--u)); column-gap: calc(0.6 * var(--u)); row-gap: calc(0.55 * var(--u)); }
+  .live .name { font-size: calc(1.05 * var(--u)); }
+  .live .sub { font-size: calc(0.8 * var(--u)); }
+  .live .val { font-size: calc(1.45 * var(--u)); }
+  .live .bar { height: calc(0.5 * var(--u)); }
+  .live h1 { font-size: calc(2.3 * var(--u)); }
+}
+
+/* Komputer i ekrany poziome: dwie kolumny, wszystko w wysokości okna */
+@media (min-width: 900px) and (min-aspect-ratio: 5/4) {
+  :root {
+    --u: clamp(11px, min(2.3vh, 1.32vw), 21px);
+    --u: clamp(11px, min(2.3dvh, 1.32vw), 21px);
+  }
+  .sheet.live {
+    max-width: calc(76 * var(--u));
+    height: 100%;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+    grid-template-rows: 1fr auto auto 1fr auto;
+    grid-template-areas: ". rows" "head rows" "sum rows" ". rows" "foot rows";
+    column-gap: calc(2.2 * var(--u));
+    row-gap: calc(1.1 * var(--u));
+    padding-block: calc(1.8 * var(--u));
+    align-content: stretch;
+  }
+  .live .head { grid-area: head; justify-content: center; }
+  .live .kicker { align-self: flex-start; order: -1; margin-bottom: calc(0.6 * var(--u)); }
+  .live h1 { font-size: calc(3.5 * var(--u)); margin-bottom: calc(1.4 * var(--u)); }
+  .live .rows { grid-area: rows; grid-template-rows: repeat(5, 1fr); gap: calc(0.85 * var(--u)); min-height: 0; }
+  .live .summary { grid-area: sum; padding: calc(1.3 * var(--u)) calc(0.5 * var(--u)); }
+  .live footer { grid-area: foot; }
+}
+@media (prefers-reduced-motion: reduce) { .bar i { transition: none; } }
+</style>
+</head>
+<body>
+<main class="sheet live" aria-live="polite">
+  <header class="head">
+  <div class="kicker" id="kicker">100 km realnej jazdy</div>
+  <h1><span id="h-home">11 zł</span> z gniazdka,<br><span class="hot" id="h-h2">75 zł na wodorze</span><span class="dot">.</span></h1>
+  </header>
+
+  <div class="rows">
+
+  <section class="row c-home" id="r-home">
+    <div class="ico" aria-hidden="true">🏠</div>
+    <div class="txt"><div class="name">Gniazdko w domu (G12w)<span class="badge-slot"></span></div><div class="sub" id="s-home"></div></div>
+    <div class="val" id="v-home"></div>
+    <div class="bar"><i id="b-home"></i></div>
+  </section>
+
+  <section class="row c-ac" id="r-ac">
+    <div class="ico" aria-hidden="true">🔌</div>
+    <div class="txt"><div class="name">Publiczna ładowarka AC<span class="badge-slot"></span></div><div class="sub" id="s-ac"></div></div>
+    <div class="val" id="v-ac"></div>
+    <div class="bar"><i id="b-ac"></i></div>
+  </section>
+
+  <section class="row c-dc" id="r-dc">
+    <div class="ico" aria-hidden="true">⚡</div>
+    <div class="txt"><div class="name">Szybkie DC (trasa 50–350 kW)<span class="badge-slot"></span></div><div class="sub" id="s-dc"></div></div>
+    <div class="val" id="v-dc"></div>
+    <div class="bar"><i id="b-dc"></i></div>
+  </section>
+
+  <section class="row c-pb" id="r-pb">
+    <div class="ico" aria-hidden="true">⛽</div>
+    <div class="txt"><div class="name">Benzyna Pb95 (Auto spalinowe)<span class="badge-slot"></span></div><div class="sub" id="s-pb"></div></div>
+    <div class="val" id="v-pb"></div>
+    <div class="bar"><i id="b-pb"></i></div>
+  </section>
+
+  <section class="row c-h2" id="r-h2">
+    <div class="ico" aria-hidden="true">💧</div>
+    <div class="txt"><div class="name">Wodór H2 (Orlen)<span class="badge-slot"></span></div><div class="sub" id="s-h2"></div></div>
+    <div class="val" id="v-h2"></div>
+    <div class="bar"><i id="b-h2"></i></div>
+  </section>
+  </div>
+
+  <section class="summary">
+    <div class="cell"><div class="lbl">Przepaść cenowa</div><div class="big g" id="x-ratio">7× taniej</div><div class="note">Gniazdko vs Wodór</div></div>
+    <div class="sep" aria-hidden="true"></div>
+    <div class="cell"><div class="lbl">Wodór vs DC</div><div class="big r" id="x-pct">+38% drożej</div><div class="note">niż najdroższe szybkie ładowarki</div></div>
+  </section>
+
+  <footer>
+    <div class="line" id="f-line">Dane: Orlen H2 / Taryfy URE / E-petrol</div>
+    <div class="foot-row">
+      <details><summary>Źródła</summary><div id="f-meta"></div></details>
+      <button class="dl" id="dl" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v8M4.5 6.8 8 10.3l3.5-3.5M2.5 13.5h11"/></svg><span>Pobierz obrazek</span></button>
+    </div>
+  </footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+<script>
+(function () {
+  // Gdzie leży data.json. Na GitHub Pages wystarczy "data.json".
+  // Na każdej innej stronie (np. techlove.pl/100km/) dane idą prosto z repozytorium na GitHubie.
+  // Inny adres: ustaw window.KOSZT100_DATA_URL w osobnym tagu script przed tym skryptem.
+  var RAW_URL = "https://raw.githubusercontent.com/norbertcala/100km/main/data.json";
+  var sameHost = /\.github\.io$|^localhost$|^127\.0\.0\.1$/.test(location.hostname);
+  var DATA_URL = window.KOSZT100_DATA_URL || (sameHost ? "data.json" : RAW_URL);
+  // Adres podpisywany na pobranym obrazku.
+  var SITE_URL = window.KOSZT100_SITE_URL || "https://techlove.pl/100km/";
+  var lastWhen = "", lastDate = "";
+
+  // Dane wbudowane - identyczne z grafiką; używane, gdy data.json się nie wczyta.
+  var DEFAULTS = {
+    updated: "2026-10-06T15:00:00+02:00",
+    distance_km: 100,
+    consumption: { ev_kwh_min: 17, ev_kwh_max: 18, petrol_l: 7.0, h2_kg: 1.09 },
+    prices: { g12w: 0.65, ac: 1.75, dc_min: 2.00, dc_max: 3.00, pb95: 6.79, pb95_kind: "max", h2: 69.0 },
+    sources: {
+      g12w: { name: "Taryfy URE", url: "https://www.ure.gov.pl/pl/energia-elektryczna/taryfy" },
+      ac: { name: "Ranking cen ładowania – elektromobilni.pl", url: "https://elektromobilni.pl/ranking-cen-ladowania-w-polsce/" },
+      dc: { name: "Ranking cen ładowania – elektromobilni.pl", url: "https://elektromobilni.pl/ranking-cen-ladowania-w-polsce/" },
+      pb95: { name: "Monitor Polski – obwieszczenie Ministra Energii", url: "https://api.sejm.gov.pl/eli/acts/MP/2026" },
+      h2: { name: "Orlen H2", url: "https://www.orlen.pl" }
+    },
+    footer: "Dane: Orlen H2 / Taryfy URE / E-petrol"
+  };
+
+  var $ = function (id) { return document.getElementById(id); };
+  function pl(n, d) { return n.toLocaleString("pl-PL", { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+  function render(D) {
+    var c = D.consumption, p = D.prices, km = D.distance_km || 100, f = km / 100;
+    var evAvg = (c.ev_kwh_min + c.ev_kwh_max) / 2;
+
+    var rows = {
+      home: Math.round(p.g12w * evAvg * f),
+      ac:   Math.round(p.ac * evAvg * f),
+      dcLo: Math.round(p.dc_min * c.ev_kwh_min * f),
+      dcHi: Math.round(p.dc_max * c.ev_kwh_max * f),
+      pb:   Math.round(p.pb95 * c.petrol_l * f),
+      h2:   Math.round(p.h2 * c.h2_kg * f)
+    };
+    var mid = { home: rows.home, ac: rows.ac, dc: (rows.dcLo + rows.dcHi) / 2, pb: rows.pb, h2: rows.h2 };
+    var max = Math.max(mid.home, mid.ac, rows.dcHi, mid.pb, mid.h2);
+
+    $("kicker").textContent = km + " km realnej jazdy";
+    $("h-home").textContent = rows.home + " zł";
+    $("h-h2").textContent = rows.h2 + " zł na wodorze";
+
+    $("s-home").textContent = pl(p.g12w, 2) + " zł/kWh • EV ~" + c.ev_kwh_min + "–" + c.ev_kwh_max + " kWh (ze stratami ładowania)";
+    $("s-ac").textContent = "Słupki miejskie • Stawka ~" + pl(p.ac, 2) + " zł/kWh";
+    $("s-dc").textContent = "Stawki w trasie " + pl(p.dc_min, 2) + " - " + pl(p.dc_max, 2) + " zł/kWh (Ionity / GW)";
+    $("s-pb").textContent = (p.pb95_kind === "avg" ? "Śr. " : "Maks. ") + pl(p.pb95, 2) + " zł/l • Średnie auto ~" + pl(c.petrol_l, 1) + " l / 100 km";
+    $("s-h2").textContent = "Orlen " + pl(p.h2, p.h2 % 1 ? 2 : 0) + " zł/kg • Toyota Mirai ~" + pl(c.h2_kg, 1) + " kg / 100 km";
+
+    $("v-home").textContent = "~" + rows.home + " zł";
+    $("v-ac").textContent = "~" + rows.ac + " zł";
+    $("v-dc").textContent = "~" + rows.dcLo + "-" + rows.dcHi + " zł";
+    $("v-pb").textContent = "~" + rows.pb + " zł";
+    $("v-h2").textContent = "~" + rows.h2 + " zł";
+
+    ["home", "ac", "dc", "pb", "h2"].forEach(function (k) {
+      $("b-" + k).style.width = Math.max(3, (mid[k] / max) * 100).toFixed(1) + "%";
+      var r = $("r-" + k); r.classList.remove("best", "worst");
+      r.querySelector(".badge-slot").innerHTML = "";
+    });
+    var order = ["home", "ac", "dc", "pb", "h2"].sort(function (a, b) { return mid[a] - mid[b]; });
+    var best = order[0], worst = order[order.length - 1];
+    $("r-" + best).classList.add("best");
+    $("r-" + best).querySelector(".badge-slot").innerHTML = '<span class="badge lead">Lider opłacalności</span>';
+    $("r-" + worst).classList.add("worst");
+    $("r-" + worst).querySelector(".badge-slot").innerHTML = '<span class="badge top">Najdroższa opcja</span>';
+
+    $("x-ratio").textContent = Math.round(rows.h2 / rows.home) + "× taniej";
+    var pct = Math.floor((rows.h2 / rows.dcHi - 1) * 100);
+    $("x-pct").textContent = (pct >= 0 ? "+" + pct + "% drożej" : pct + "% taniej");
+
+        var when = "";
+    try { when = new Date(D.updated).toLocaleString("pl-PL", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Warsaw" }); } catch (e) {}
+    var s = D.sources || {}, seen = {}, links = [];
+    ["pb95", "ac", "dc", "g12w", "h2"].forEach(function (k) {
+      var src = s[k]; if (!src || seen[src.name]) return; seen[src.name] = 1;
+      links.push('<a href="' + esc(src.url) + '" target="_blank" rel="noopener">' + esc(src.name) + "</a>");
+    });
+    lastWhen = when;
+    lastDate = String(D.updated || "").slice(0, 10);
+    $("f-line").textContent = (D.footer || DEFAULTS.footer) + (when ? " · " + when : "");
+    $("f-meta").innerHTML = links.join(" · ");
+  }
+
+  // ---------- Pobierz obrazek ----------
+  function buildPoster() {
+    var wrap = document.createElement("div");
+    wrap.className = "poster";
+    var sheet = document.querySelector(".sheet").cloneNode(true);
+    sheet.classList.remove("live");
+    sheet.removeAttribute("aria-live");
+    sheet.querySelectorAll("[id]").forEach(function (el) { el.removeAttribute("id"); });
+    var fr = sheet.querySelector(".foot-row");
+    if (fr) fr.remove();
+    var line = sheet.querySelector("footer .line");
+    if (line) line.textContent = line.textContent.split(" · ")[0];
+    var stamp = document.createElement("div");
+    stamp.className = "stamp";
+    stamp.innerHTML = "Pobrano z serwisu <b>" + esc(SITE_URL) + "</b>" +
+      (lastWhen ? " · dane z " + esc(lastWhen) : "");
+    sheet.querySelector("footer").appendChild(stamp);
+    wrap.appendChild(sheet);
+    document.body.appendChild(wrap);
+    return wrap;
+  }
+
+  function saveBlob(blob, name) {
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+  }
+
+  var btn = $("dl"), label = btn.querySelector("span");
+  btn.addEventListener("click", function () {
+    if (!window.htmlToImage) { label.textContent = "Błąd: brak biblioteki"; return; }
+    btn.disabled = true; label.textContent = "Przygotowuję…";
+    var poster = buildPoster();
+    var opts = { pixelRatio: 2, cacheBust: true, backgroundColor: "#060914",
+                 width: 814, height: poster.offsetHeight,
+                 style: { position: "static", left: "0", top: "0" } };
+    (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve())
+      .then(function () { return window.htmlToImage.toBlob(poster, opts); })
+      .then(function (blob) {
+        saveBlob(blob, "koszt-100km-" + (lastDate || new Date().toISOString().slice(0, 10)) + ".png");
+        label.textContent = "Pobrano";
+      })
+      .catch(function () { label.textContent = "Nie udało się – spróbuj ponownie"; })
+      .then(function () {
+        poster.remove(); btn.disabled = false;
+        setTimeout(function () { label.textContent = "Pobierz obrazek"; }, 2500);
+      });
+  });
+
+  render(DEFAULTS);
+  fetch(DATA_URL + (DATA_URL.indexOf("?") < 0 ? "?" : "&") + "t=" + Date.now(), { cache: "no-store" })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (d) {
+      d.consumption = Object.assign({}, DEFAULTS.consumption, d.consumption);
+      d.prices = Object.assign({}, DEFAULTS.prices, d.prices);
+      render(d);
+    })
+    .catch(function () { /* zostają dane wbudowane */ });
+})();
+</script>
+</body>
+</html>
