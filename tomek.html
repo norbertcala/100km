@@ -461,6 +461,9 @@ footer a:hover, footer a:focus-visible { color: var(--fg); outline: none; }
       r.querySelector(".badge-slot").innerHTML = "";
     });
     var order = KEYS.slice().sort(function (a, b) { return mid[a] - mid[b]; });
+    // Karty od najtańszej do najdroższej
+    var list = $("r-home").parentNode;
+    order.forEach(function (k) { list.appendChild($("r-" + k)); });
     var best = order[0], worst = order[order.length - 1];
     $("r-" + best).classList.add("best");
     $("r-" + best).querySelector(".badge-slot").innerHTML = '<span class="badge lead">Lider opłacalności</span>';
