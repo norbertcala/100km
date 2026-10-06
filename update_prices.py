@@ -33,7 +33,8 @@ HERE = Path(__file__).resolve().parent
 CONFIG = HERE / "config.json"
 DATA = HERE / "data.json"
 
-UA = "Mozilla/5.0 (koszt-100km updater; +https://techlove.pl)"
+UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+      "(KHTML, like Gecko) Chrome/128.0 Safari/537.36")
 ELI_BASE = "https://api.sejm.gov.pl/eli/acts/MP"
 RANKING_URL = "https://elektromobilni.pl/ranking-cen-ladowania-w-polsce/"
 EPETROL_URL = "https://www.e-petrol.pl/notowania/rynek-krajowy/ceny-stacje-paliw"
@@ -45,7 +46,9 @@ def log(msg):
 
 
 def http_get(url, binary=False, timeout=30):
-    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept-Language": "pl-PL,pl"})
+    req = urllib.request.Request(url, headers={
+        "User-Agent": UA, "Accept-Language": "pl-PL,pl;q=0.9",
+        "Accept": "text/html,application/xhtml+xml,application/json,application/pdf,*/*;q=0.8"})
     with urllib.request.urlopen(req, timeout=timeout) as r:
         raw = r.read()
     return raw if binary else raw.decode("utf-8", errors="replace")
@@ -120,7 +123,13 @@ def parse_epetrol(html):
         if sorted(keys[:4]) == sorted(order):
             order = keys[:4]
     num_re = r"(\d{1,2}[,.]\d{2})"
-    rows = re.findall(r"(\d{4}-\d{2}-\d{2})\s+" + r"\s+".join([num_re] * 4), t)
+    rows = []
+    date_re = r"(\d{4}-\d{2}-\d{2}|\d{2}[./-]\d{2}[./-]\d{4})"
+    for m in re.finditer(date_re + r"\s+" + r"\s+".join([num_re] * 4), t):
+        d = m.group(1)
+        if not d[:4].isdigit():  # DD.MM.YYYY -> YYYY-MM-DD
+            d = f"{d[6:10]}-{d[3:5]}-{d[0:2]}"
+        rows.append((d,) + m.groups()[1:])
     if not rows:
         return None
     date, *vals = max(rows, key=lambda r: r[0])
@@ -179,6 +188,7 @@ def main():
     prices["h2"] = cfg["manual"]["h2_pln_kg"]
     sources = old.get("sources", {})
     used = []
+    status = {}
     now = datetime.now(WARSAW)
 
     # e-petrol: LPG zawsze, Pb95/ON jako zapas
@@ -188,8 +198,10 @@ def main():
         if not ep:
             raise RuntimeError("nie rozpoznano tabeli cen")
         log(f"e-petrol: {ep}")
+        status["e-petrol"] = "ok"
     except Exception as e:
         log(f"e-petrol niedostępny ({e})")
+        status["e-petrol"] = f"błąd: {e}"[:200]
         ep = None
     if ep:
         d = datetime.strptime(ep["date"], "%Y-%m-%d")
@@ -206,8 +218,10 @@ def main():
                 prices[k], prices[k + "_kind"] = mx[k], "max"
                 sources[k] = {"name": name, "url": url, "auto": True}
         used.insert(0, "Monitor Polski")
+        status["monitor-polski"] = "ok"
         log(f"Ceny maks.: {mx}")
     except Exception as e:
+        status["monitor-polski"] = f"błąd: {e}"[:200]
         log(f"Ceny maks. niedostępne ({e}) - biorę średnie e-petrol")
         if ep:
             d = datetime.strptime(ep["date"], "%Y-%m-%d")
@@ -227,8 +241,10 @@ def main():
         for k in ("ac", "dc"):
             sources[k] = {"name": "Ranking cen ładowania – elektromobilni.pl" + note, "url": RANKING_URL, "auto": True}
         used.append("elektromobilni.pl")
+        status["elektromobilni"] = "ok"
         log(f"Ładowanie: {r}")
     except Exception as e:
+        status["elektromobilni"] = f"błąd: {e}"[:200]
         log(f"Ranking ładowania: zostają poprzednie wartości ({e})")
 
     sources.setdefault("g12w", {"name": "Taryfy URE", "url": "https://www.ure.gov.pl/pl/energia-elektryczna/taryfy", "auto": False})
@@ -248,6 +264,7 @@ def main():
         "prices": prices,
         "sources": sources,
         "footer": "Dane: " + " / ".join(seen),
+        "status": status,
     }
     DATA.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", "utf-8")
     log("Zapisano data.json")
