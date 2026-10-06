@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-06T17:43:59+02:00",
+  "updated": "2026-10-06T17:51:55+02:00",
   "distance_km": 100,
   "consumption": {
     "ev_kwh_min": 17,
@@ -19,7 +19,8 @@
     "on_kind": "max",
     "lpg": 3.16,
     "h2": 69.0,
-    "home": 1.04
+    "home": 1.04,
+    "home_night": 0.63
   },
   "sources": {
     "ac": {
@@ -59,6 +60,11 @@
     },
     "home": {
       "name": "Prąd w domu: średnia G11 2026 z dystrybucją i opłatami (PGE, Tauron, Enea, Energa, E.ON)",
+      "url": "https://biznes.interia.pl/gospodarka/news-ile-kosztuje-1-kwh-w-2026-roku-ceny-pradu-w-tauronie-pge-i-u,nId,23478259",
+      "auto": false
+    },
+    "home_night": {
+      "name": "Prąd w nocy: średnia strefy tańszej G12/G12w 2026 z dystrybucją (Enea, Tauron, PGE, Energa)",
       "url": "https://biznes.interia.pl/gospodarka/news-ile-kosztuje-1-kwh-w-2026-roku-ceny-pradu-w-tauronie-pge-i-u,nId,23478259",
       "auto": false
     }
