@@ -38,6 +38,7 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
 ELI_BASE = "https://api.sejm.gov.pl/eli/acts/MP"
 RANKING_URL = "https://elektromobilni.pl/ranking-cen-ladowania-w-polsce/"
 EPETROL_URL = "https://www.e-petrol.pl/notowania/rynek-krajowy/ceny-stacje-paliw"
+AUTOCENTRUM_URL = "https://www.autocentrum.pl/paliwa/ceny-paliw/"
 MAX_PRICE_AGE_DAYS = 5  # starsze obwieszczenie = cena maksymalna już nie obowiązuje
 
 
@@ -141,6 +142,17 @@ def parse_epetrol(html):
     return out
 
 
+def parse_autocentrum(html):
+    """Średnia krajowa LPG z autocentrum.pl (przycisk 'LPG 3,16 zł')."""
+    t = re.sub(r"<[^>]+>", " ", html)
+    t = re.sub(r"&nbsp;|\s+", " ", t)
+    m = re.search(r"\bLPG\s*(\d,\d{2})\s*zł", t)
+    if not m:
+        return None
+    v = num(m.group(1))
+    return v if 1 < v < 8 else None
+
+
 # ---------- AC / DC: ranking elektromobilni.pl ----------
 
 def parse_ranking(html):
@@ -208,6 +220,19 @@ def main():
         prices["lpg"] = ep["lpg"]
         sources["lpg"] = {"name": f"e-petrol.pl – średnia krajowa z {d:%d.%m.%Y}", "url": EPETROL_URL, "auto": True}
         used.append("e-petrol")
+    else:
+        try:
+            v = parse_autocentrum(http_get(AUTOCENTRUM_URL))
+            if not v:
+                raise RuntimeError("nie rozpoznano ceny LPG")
+            prices["lpg"] = v
+            sources["lpg"] = {"name": f"AutoCentrum.pl – średnia krajowa z {now:%d.%m.%Y}", "url": AUTOCENTRUM_URL, "auto": True}
+            used.append("AutoCentrum")
+            status["autocentrum"] = "ok"
+            log(f"LPG (AutoCentrum): {v}")
+        except Exception as e:
+            status["autocentrum"] = f"błąd: {e}"[:200]
+            log(f"LPG: zostaje poprzednia wartość ({e})")
 
     # Pb95 i ON: cena maksymalna, a gdy nie obowiązuje - średnia e-petrol
     try:
