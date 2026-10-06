@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-06T17:34:51+02:00",
+  "updated": "2026-10-06T17:37:00+02:00",
   "distance_km": 100,
   "consumption": {
     "ev_kwh_min": 17,
@@ -17,7 +17,7 @@
     "pb95_kind": "max",
     "on": 7.82,
     "on_kind": "max",
-    "lpg": 3.22,
+    "lpg": 3.16,
     "g12w": 0.65,
     "h2": 69.0
   },
@@ -56,11 +56,17 @@
       "name": "Zużycie: KE – dane OBFCM (realne spalanie ~20% powyżej WLTP)",
       "url": "https://climate.ec.europa.eu/news-other-reads/news/first-commission-report-real-world-co2-emissions-cars-and-vans-using-data-board-fuel-consumption-2024-03-18_en",
       "auto": false
+    },
+    "lpg": {
+      "name": "AutoCentrum.pl – średnia krajowa z 06.10.2026",
+      "url": "https://www.autocentrum.pl/paliwa/ceny-paliw/",
+      "auto": true
     }
   },
-  "footer": "Dane: Orlen H2 / Taryfy URE / Monitor Polski / elektromobilni.pl",
+  "footer": "Dane: Orlen H2 / Taryfy URE / Monitor Polski / AutoCentrum / elektromobilni.pl",
   "status": {
     "e-petrol": "błąd: HTTP Error 403: Forbidden",
+    "autocentrum": "ok",
     "monitor-polski": "ok",
     "elektromobilni": "ok"
   }
