@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-09T17:34:17+02:00",
+  "updated": "2026-10-10T16:45:11+02:00",
   "distance_km": 100,
   "consumption": {
     "ev_kwh_min": 17,
@@ -18,7 +18,7 @@
     "pb95_kind": "max",
     "on": 7.82,
     "on_kind": "max",
-    "lpg": 3.18,
+    "lpg": 3.2,
     "pb98": 7.77,
     "pb98_kind": "max",
     "h2": 69.0,
@@ -59,7 +59,7 @@
       "auto": false
     },
     "lpg": {
-      "name": "AutoCentrum.pl – średnia krajowa z 09.10.2026",
+      "name": "AutoCentrum.pl – średnia krajowa z 10.10.2026",
       "url": "https://www.autocentrum.pl/paliwa/ceny-paliw/",
       "auto": true
     },
