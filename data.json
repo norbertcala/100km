@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-14T16:03:09+02:00",
+  "updated": "2026-10-15T15:42:15+02:00",
   "distance_km": 100,
   "consumption": {
     "ev_kwh_min": 17,
@@ -14,12 +14,12 @@
     "ac": 1.75,
     "dc_min": 2.1,
     "dc_max": 3.1,
-    "pb95": 7.11,
+    "pb95": 7.01,
     "pb95_kind": "max",
-    "on": 7.98,
+    "on": 8.05,
     "on_kind": "max",
-    "lpg": 3.28,
-    "pb98": 8.01,
+    "lpg": 3.29,
+    "pb98": 7.83,
     "pb98_kind": "max",
     "h2": 69.0,
     "home": 1.04,
@@ -39,8 +39,8 @@
       "auto": true
     },
     "pb95": {
-      "name": "Monitor Polski – obwieszczenie ME z 13.10.2026",
-      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/996/text.pdf",
+      "name": "Monitor Polski – obwieszczenie ME z 14.10.2026",
+      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/1000/text.pdf",
       "auto": true
     },
     "h2": {
@@ -49,8 +49,8 @@
       "auto": false
     },
     "on": {
-      "name": "Monitor Polski – obwieszczenie ME z 13.10.2026",
-      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/996/text.pdf",
+      "name": "Monitor Polski – obwieszczenie ME z 14.10.2026",
+      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/1000/text.pdf",
       "auto": true
     },
     "consumption": {
@@ -59,7 +59,7 @@
       "auto": false
     },
     "lpg": {
-      "name": "AutoCentrum.pl – średnia krajowa z 14.10.2026",
+      "name": "AutoCentrum.pl – średnia krajowa z 15.10.2026",
       "url": "https://www.autocentrum.pl/paliwa/ceny-paliw/",
       "auto": true
     },
@@ -74,8 +74,8 @@
       "auto": false
     },
     "pb98": {
-      "name": "Monitor Polski – obwieszczenie ME z 13.10.2026",
-      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/996/text.pdf",
+      "name": "Monitor Polski – obwieszczenie ME z 14.10.2026",
+      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/1000/text.pdf",
       "auto": true
     }
   },
