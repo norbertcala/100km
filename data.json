@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-20T15:51:33+02:00",
+  "updated": "2026-10-21T16:08:27+02:00",
   "distance_km": 100,
   "consumption": {
     "ev_kwh_min": 17,
@@ -14,12 +14,12 @@
     "ac": 1.75,
     "dc_min": 2.1,
     "dc_max": 3.1,
-    "pb95": 6.79,
+    "pb95": 6.7,
     "pb95_kind": "max",
-    "on": 7.97,
+    "on": 7.98,
     "on_kind": "max",
     "lpg": 3.44,
-    "pb98": 7.56,
+    "pb98": 7.43,
     "pb98_kind": "max",
     "h2": 69.0,
     "home": 1.04,
@@ -39,8 +39,8 @@
       "auto": true
     },
     "pb95": {
-      "name": "Monitor Polski – obwieszczenie ME z 19.10.2026",
-      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/1015/text.pdf",
+      "name": "Monitor Polski – obwieszczenie ME z 20.10.2026",
+      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/1022/text.pdf",
       "auto": true
     },
     "h2": {
@@ -49,8 +49,8 @@
       "auto": false
     },
     "on": {
-      "name": "Monitor Polski – obwieszczenie ME z 19.10.2026",
-      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/1015/text.pdf",
+      "name": "Monitor Polski – obwieszczenie ME z 20.10.2026",
+      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/1022/text.pdf",
       "auto": true
     },
     "consumption": {
@@ -74,15 +74,15 @@
       "auto": false
     },
     "pb98": {
-      "name": "Monitor Polski – obwieszczenie ME z 19.10.2026",
-      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/1015/text.pdf",
+      "name": "Monitor Polski – obwieszczenie ME z 20.10.2026",
+      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/1022/text.pdf",
       "auto": true
     }
   },
-  "footer": "Dane: Orlen H2 / Taryfy URE / Monitor Polski / AutoCentrum / elektromobilni.pl",
+  "footer": "Dane: Orlen H2 / Taryfy URE / Monitor Polski / elektromobilni.pl",
   "status": {
     "e-petrol": "błąd: HTTP Error 403: Forbidden",
-    "autocentrum": "ok",
+    "autocentrum": "błąd: HTTP Error 503: Service Temporarily Unavailable",
     "monitor-polski": "ok",
     "elektromobilni": "ok"
   }
