@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-21T16:08:27+02:00",
+  "updated": "2026-10-22T16:06:34+02:00",
   "distance_km": 100,
   "consumption": {
     "ev_kwh_min": 17,
@@ -14,12 +14,12 @@
     "ac": 1.75,
     "dc_min": 2.1,
     "dc_max": 3.1,
-    "pb95": 6.7,
+    "pb95": 6.63,
     "pb95_kind": "max",
-    "on": 7.98,
+    "on": 8.02,
     "on_kind": "max",
-    "lpg": 3.44,
-    "pb98": 7.43,
+    "lpg": 3.49,
+    "pb98": 7.37,
     "pb98_kind": "max",
     "h2": 69.0,
     "home": 1.04,
@@ -39,8 +39,8 @@
       "auto": true
     },
     "pb95": {
-      "name": "Monitor Polski – obwieszczenie ME z 20.10.2026",
-      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/1022/text.pdf",
+      "name": "Monitor Polski – obwieszczenie ME z 21.10.2026",
+      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/1023/text.pdf",
       "auto": true
     },
     "h2": {
@@ -49,8 +49,8 @@
       "auto": false
     },
     "on": {
-      "name": "Monitor Polski – obwieszczenie ME z 20.10.2026",
-      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/1022/text.pdf",
+      "name": "Monitor Polski – obwieszczenie ME z 21.10.2026",
+      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/1023/text.pdf",
       "auto": true
     },
     "consumption": {
@@ -59,7 +59,7 @@
       "auto": false
     },
     "lpg": {
-      "name": "AutoCentrum.pl – średnia krajowa z 20.10.2026",
+      "name": "AutoCentrum.pl – średnia krajowa z 22.10.2026",
       "url": "https://www.autocentrum.pl/paliwa/ceny-paliw/",
       "auto": true
     },
@@ -74,15 +74,15 @@
       "auto": false
     },
     "pb98": {
-      "name": "Monitor Polski – obwieszczenie ME z 20.10.2026",
-      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/1022/text.pdf",
+      "name": "Monitor Polski – obwieszczenie ME z 21.10.2026",
+      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/1023/text.pdf",
       "auto": true
     }
   },
-  "footer": "Dane: Orlen H2 / Taryfy URE / Monitor Polski / elektromobilni.pl",
+  "footer": "Dane: Orlen H2 / Taryfy URE / Monitor Polski / AutoCentrum / elektromobilni.pl",
   "status": {
     "e-petrol": "błąd: HTTP Error 403: Forbidden",
-    "autocentrum": "błąd: HTTP Error 503: Service Temporarily Unavailable",
+    "autocentrum": "ok",
     "monitor-polski": "ok",
     "elektromobilni": "ok"
   }
