@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-18T18:34:11+01:00",
+  "updated": "2026-11-19T18:39:48+01:00",
   "distance_km": 100,
   "consumption": {
     "ev_kwh_min": 17,
@@ -18,7 +18,7 @@
     "pb95_kind": "max",
     "on": 7.57,
     "on_kind": "max",
-    "lpg": 3.89,
+    "lpg": 3.91,
     "pb98": 6.64,
     "pb98_kind": "max",
     "h2": 69.0,
@@ -59,7 +59,7 @@
       "auto": false
     },
     "lpg": {
-      "name": "AutoCentrum.pl – średnia krajowa z 18.11.2026",
+      "name": "AutoCentrum.pl – średnia krajowa z 19.11.2026",
       "url": "https://www.autocentrum.pl/paliwa/ceny-paliw/",
       "auto": true
     },
@@ -79,11 +79,11 @@
       "auto": true
     }
   },
-  "footer": "Dane: Orlen H2 / Taryfy URE / Monitor Polski / AutoCentrum / elektromobilni.pl",
+  "footer": "Dane: Orlen H2 / Taryfy URE / AutoCentrum / elektromobilni.pl",
   "status": {
     "e-petrol": "błąd: HTTP Error 403: Forbidden",
     "autocentrum": "ok",
-    "monitor-polski": "ok",
+    "monitor-polski": "błąd: nie znaleziono ceny Pb95 w obwieszczeniu",
     "elektromobilni": "ok"
   }
 }
