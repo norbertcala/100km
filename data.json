@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-19T18:39:48+01:00",
+  "updated": "2026-11-20T18:17:49+01:00",
   "distance_km": 100,
   "consumption": {
     "ev_kwh_min": 17,
@@ -14,12 +14,12 @@
     "ac": 1.75,
     "dc_min": 2.1,
     "dc_max": 3.11,
-    "pb95": 5.99,
+    "pb95": 5.93,
     "pb95_kind": "max",
-    "on": 7.57,
+    "on": 7.45,
     "on_kind": "max",
     "lpg": 3.91,
-    "pb98": 6.64,
+    "pb98": 6.58,
     "pb98_kind": "max",
     "h2": 69.0,
     "home": 1.04,
@@ -39,8 +39,8 @@
       "auto": true
     },
     "pb95": {
-      "name": "Monitor Polski – obwieszczenie ME z 17.11.2026",
-      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/1144/text.pdf",
+      "name": "Monitor Polski – obwieszczenie ME z 19.11.2026",
+      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/1155/text.pdf",
       "auto": true
     },
     "h2": {
@@ -49,8 +49,8 @@
       "auto": false
     },
     "on": {
-      "name": "Monitor Polski – obwieszczenie ME z 17.11.2026",
-      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/1144/text.pdf",
+      "name": "Monitor Polski – obwieszczenie ME z 19.11.2026",
+      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/1155/text.pdf",
       "auto": true
     },
     "consumption": {
@@ -59,7 +59,7 @@
       "auto": false
     },
     "lpg": {
-      "name": "AutoCentrum.pl – średnia krajowa z 19.11.2026",
+      "name": "AutoCentrum.pl – średnia krajowa z 20.11.2026",
       "url": "https://www.autocentrum.pl/paliwa/ceny-paliw/",
       "auto": true
     },
@@ -74,16 +74,16 @@
       "auto": false
     },
     "pb98": {
-      "name": "Monitor Polski – obwieszczenie ME z 17.11.2026",
-      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/1144/text.pdf",
+      "name": "Monitor Polski – obwieszczenie ME z 19.11.2026",
+      "url": "https://api.sejm.gov.pl/eli/acts/MP/2026/1155/text.pdf",
       "auto": true
     }
   },
-  "footer": "Dane: Orlen H2 / Taryfy URE / AutoCentrum / elektromobilni.pl",
+  "footer": "Dane: Orlen H2 / Taryfy URE / Monitor Polski / AutoCentrum / elektromobilni.pl",
   "status": {
     "e-petrol": "błąd: HTTP Error 403: Forbidden",
     "autocentrum": "ok",
-    "monitor-polski": "błąd: nie znaleziono ceny Pb95 w obwieszczeniu",
+    "monitor-polski": "ok",
     "elektromobilni": "ok"
   }
 }
